@@ -1,0 +1,1 @@
+access `/graphql-php-tutorial/examples/001/`
