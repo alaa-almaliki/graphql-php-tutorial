@@ -1,1 +1,1 @@
-# Self education tutorial
+# Self Education Tutorial
