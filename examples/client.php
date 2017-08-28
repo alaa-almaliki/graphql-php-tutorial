@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'send' => function ($url, $query) {
+    'send' => function ($url, $query, $toArray = false) {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -13,6 +13,10 @@ return [
         );
         $result = curl_exec($ch);
         curl_close($ch);
+
+        if ($toArray) {
+            $result =  json_decode($result, true);
+        }
         return $result;
     }
 ];
