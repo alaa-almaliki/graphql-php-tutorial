@@ -1,5 +1,7 @@
 <?php
-
+require_once __DIR__ . '/../src/Graphql/Client/Query/Argument.php';
+require_once __DIR__ . '/../src/Graphql/Client/Query/Field.php';
+require_once __DIR__ . '/../src/Graphql/Client/Query/Parser.php';
 return [
     'send' => function ($url, $query, $toArray = false) {
 

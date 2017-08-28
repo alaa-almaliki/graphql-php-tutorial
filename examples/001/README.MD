@@ -1,1 +1,1 @@
-access `/graphql-php-tutorial/examples/001/`
+Web access `/graphql-php-tutorial/examples/001/`
