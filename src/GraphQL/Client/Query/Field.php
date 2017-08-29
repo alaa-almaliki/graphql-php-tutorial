@@ -13,6 +13,8 @@ class Field implements FieldInterface
 {
     /** @var  string */
     private $name;
+    /** @var  string */
+    private $aliasName;
     /** @var array  */
     private $arguments = [];
     /** @var array  */
@@ -21,11 +23,13 @@ class Field implements FieldInterface
     /**
      * Field constructor.
      * @param string|null $name
+     * @param string|null $aliasName
      * @param array $arguments
      */
-    public function __construct($name = null, array $arguments = [])
+    public function __construct($name = null, $aliasName = null, array $arguments = [])
     {
         $this->name = $name;
+        $this->aliasName = $aliasName;
         $this->setArguments($arguments);
     }
 
@@ -45,6 +49,24 @@ class Field implements FieldInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param  string $aliasName
+     * @return $this
+     */
+    public function setAliasName($aliasName)
+    {
+        $this->aliasName = $aliasName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAliasName()
+    {
+        return $this->aliasName;
     }
 
     /**
@@ -162,9 +184,14 @@ class Field implements FieldInterface
      */
     public function getFieldString()
     {
-        $str = $this->getName();
+        $str =  $this->getName();
+
+        if ($this->getAliasName() !== null) {
+            $str = $this->getAliasName() . ' : ' . $this->getName();
+        }
+
         if ($this->hasArguments()) {
-            $str = $this->getName() . '( %s )';
+            $str .= '( %s )';
         }
         return sprintf($str, implode(', ', $this->getArguments()));
     }

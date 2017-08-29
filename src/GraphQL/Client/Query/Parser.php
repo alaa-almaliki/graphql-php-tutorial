@@ -32,11 +32,13 @@ class Parser
     /**
      * @param  string $name
      * @param  array $arguments
+     * @param  string|null $aliasName
      * @return Parser
      */
-    public function addNewField($name, array $arguments = [])
+    public function addNewField($name, array $arguments = [], $aliasName = null)
     {
         $field = new Field($name);
+        $field->setAliasName($aliasName);
         foreach ($arguments as $argName => $argValue) {
             $this->_addArgumentToField($field, $argName, $argValue);
         }
@@ -79,11 +81,15 @@ class Parser
      * @param  FieldInterface $field
      * @param  string $argName
      * @param  string|int|mixed $argValue
+     * @param  string|null $aliasName
      * @return $this
      */
-    protected function _addArgumentToField(FieldInterface $field, $argName, $argValue)
+    protected function _addArgumentToField(FieldInterface $field, $argName, $argValue, $aliasName = null)
     {
         $field->addArgument($argName, $argValue);
+        if ($aliasName !== null) {
+            $field->setAliasName($aliasName);
+        }
         return $this;
     }
 
@@ -118,8 +124,9 @@ class Parser
     public function addFields(array $fields = [])
     {
         foreach ($fields as $field) {
+            $aliasName = isset($field['alias_name']) ? $field['alias_name'] : null;
             $args = isset($field['args']) ? $field['args'] : [];
-            $this->addNewField($field['name'], $args);
+            $this->addNewField($field['name'], $args, $aliasName);
         }
         return $this;
     }

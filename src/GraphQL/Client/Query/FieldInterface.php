@@ -11,6 +11,17 @@ use GraphQL\Client\Query\Field\ArgumentInterface;
 interface FieldInterface extends QueryInterface
 {
     /**
+     * @param  string $aliasName
+     * @return mixed
+     */
+    public function setAliasName($aliasName);
+
+    /**
+     * @return mixed
+     */
+    public function getAliasName();
+
+    /**
      * @param  array $arguments
      * @return mixed
      */
