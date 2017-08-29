@@ -1,6 +1,8 @@
 <?php
 namespace GraphQL\Client\Query;
 
+use GraphQL\Client\Query\Field\Argument;
+
 class Field
 {
     /** @var  string */
@@ -40,7 +42,12 @@ class Field
         return $this->arguments;
     }
 
-    public function addArgument(Argument $argument) : Field
+    public function addArgument($name, $value) : Field
+    {
+        return $this->addArgumentObject(new Argument($name, $value));
+    }
+
+    public function addArgumentObject(Argument $argument) : Field
     {
         $this->arguments[$argument->getName()] = $argument;
         return $this;

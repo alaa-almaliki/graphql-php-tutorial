@@ -8,23 +8,41 @@ class Parser
 
     private $queryString = '{"query": "%s { %s }"}';
     private $type;
-    private $field;
+    private $fields = [];
 
-    public function __construct(Field $field = null, $type = self::QUERY_TYPE_QUERY)
+    public function __construct(array $fields = [], $type = self::QUERY_TYPE_QUERY)
     {
-        $this->field = $field;
+        $this->setFields($fields);
         $this->type = $type;
     }
 
-    public function setField(Field $field): Parser
+    public function addField(Field $field) : Parser
     {
-        $this->field = $field;
+        $this->fields[$field->getName()] = $field;
         return $this;
     }
 
-    public function getField() : Field
+    public function addFields(array $fields) : Parser
     {
-        return $this->field;
+        foreach ($fields as $field) {
+            $this->addField($field);
+        }
+
+        return $this;
+    }
+
+    public function setFields(array $fields): Parser
+    {
+        foreach ($fields as $field) {
+            $this->addField($field);
+        }
+
+        return $this;
+    }
+
+    public function getFields() : array
+    {
+        return $this->fields;
     }
 
     public function setType($type) : Parser
@@ -40,6 +58,6 @@ class Parser
 
     public function parse()
     {
-        return sprintf($this->queryString, $this->getType(), $this->getField());
+        return sprintf($this->queryString, $this->getType(), implode(' ', $this->getFields()));
     }
 }

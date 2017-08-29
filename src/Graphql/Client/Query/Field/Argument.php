@@ -1,5 +1,5 @@
 <?php
-namespace GraphQL\Client\Query;
+namespace GraphQL\Client\Query\Field;
 
 class Argument
 {
