@@ -59,7 +59,7 @@ class Parser
     public function parse($print = false)
     {
         $query =  sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
-        if ($query) {
+        if ($print) {
             print_r($query);
         }
 
