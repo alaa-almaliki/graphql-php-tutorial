@@ -32,7 +32,7 @@ class Field
     public function setArguments(array $arguments = []) : Field
     {
         foreach ($arguments as $argument) {
-            $this->addArgument($argument);
+            $this->addArgumentObject($argument);
         }
         return $this;
     }

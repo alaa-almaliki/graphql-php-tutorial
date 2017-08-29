@@ -58,6 +58,6 @@ class Parser
 
     public function parse()
     {
-        return sprintf($this->queryString, $this->getType(), implode(' ', $this->getFields()));
+        return sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
     }
 }
