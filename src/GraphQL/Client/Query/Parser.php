@@ -1,21 +1,39 @@
 <?php
 namespace GraphQL\Client\Query;
 
+/**
+ * Class Parser
+ * @package GraphQL\Client\Query
+ * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
+ */
 class Parser
 {
     const QUERY_TYPE_QUERY = 'query';
     const QUERY_TYPE_MUTATION = 'mutation';
 
+    /** @var string  */
     private $queryString = '{"query": "%s { %s }"}';
+    /** @var string  */
     private $type;
+    /** @var array  */
     private $fields = [];
 
+    /**
+     * Parser constructor.
+     * @param array $fields
+     * @param string $type
+     */
     public function __construct(array $fields = [], $type = self::QUERY_TYPE_QUERY)
     {
         $this->setFields($fields);
         $this->type = $type;
     }
 
+    /**
+     * @param  string $name
+     * @param  array $arguments
+     * @return Parser
+     */
     public function addNewField($name, array $arguments = [])
     {
         $field = new Field($name);
@@ -26,6 +44,11 @@ class Parser
         return $this->addFieldObject($field);
     }
 
+    /**
+     * @param  string $name
+     * @param  array $arguments
+     * @return $this
+     */
     public function addArgumentsToField($name, array $arguments = [])
     {
         $field = $this->getField($name);
@@ -36,6 +59,13 @@ class Parser
         return $this;
     }
 
+    /**
+     * @param  string $name
+     * @param  string $argName
+     * @param  string|int|mixed $argValue
+     * @return $this
+     * @throws QueryException
+     */
     public function addArgumentToField($name, $argName, $argValue)
     {
         if (empty($argName) || empty($argValue)) {
@@ -45,6 +75,12 @@ class Parser
         return $this;
     }
 
+    /**
+     * @param  FieldInterface $field
+     * @param  string $argName
+     * @param  string|int|mixed $argValue
+     * @return $this
+     */
     protected function _addArgumentToField(FieldInterface $field, $argName, $argValue)
     {
         $field->addArgument($argName, $argValue);
@@ -52,7 +88,7 @@ class Parser
     }
 
     /**
-     * @param $name
+     * @param  string $name
      * @return FieldInterface
      * @throws QueryException
      */
@@ -64,21 +100,35 @@ class Parser
 
         return $this->fields[$name];
     }
-    public function addFieldObject(FieldInterface $field) : Parser
+
+    /**
+     * @param  FieldInterface $field
+     * @return Parser
+     */
+    public function addFieldObject(FieldInterface $field)
     {
         $this->fields[$field->getName()] = $field;
         return $this;
     }
 
+    /**
+     * @param  array $fields
+     * @return $this
+     */
     public function addFields(array $fields = [])
     {
         foreach ($fields as $field) {
             $args = isset($field['args']) ? $field['args'] : [];
             $this->addNewField($field['name'], $args);
         }
+        return $this;
     }
 
-    public function setFields(array $fields): Parser
+    /**
+     * @param  array $fields
+     * @return Parser
+     */
+    public function setFields(array $fields)
     {
         foreach ($fields as $field) {
             $this->addFieldObject($field);
@@ -87,25 +137,40 @@ class Parser
         return $this;
     }
 
-    public function getFields() : array
+    /**
+     * @return array
+     */
+    public function getFields()
     {
         return $this->fields;
     }
 
-    public function setType($type) : Parser
+    /**
+     * @param  string $type
+     * @return Parser
+     */
+    public function setType($type)
     {
         $this->type = $type;
         return $this;
     }
 
-    public function getType() : string
+    /**
+     * @return string
+     */
+    public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @param  bool $print
+     * @return string
+     */
     public function parse($print = false)
     {
         $query =  sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
+
         if ($print) {
             print_r($query);
         }

@@ -4,6 +4,11 @@ namespace GraphQL\Client\Query;
 use GraphQL\Client\Query\Field\Argument;
 use GraphQL\Client\Query\Field\ArgumentInterface;
 
+/**
+ * Class Field
+ * @package GraphQL\Client\Query
+ * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
+ */
 class Field implements FieldInterface
 {
     /** @var  string */
@@ -13,24 +18,40 @@ class Field implements FieldInterface
     /** @var array  */
     private $fields = [];
 
+    /**
+     * Field constructor.
+     * @param string|null $name
+     * @param array $arguments
+     */
     public function __construct($name = null, array $arguments = [])
     {
         $this->name = $name;
         $this->setArguments($arguments);
     }
 
-    public function setName($name) : Field
+    /**
+     * @param  string $name
+     * @return $this
+     */
+    public function setName($name)
     {
         $this->name = $name;
         return $this;
     }
 
-    public function getName() : string
+    /**
+     * @return string
+     */
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setArguments(array $arguments = []) : Field
+    /**
+     * @param  array $arguments
+     * @return $this
+     */
+    public function setArguments(array $arguments = [])
     {
         foreach ($arguments as $argument) {
             $this->addArgumentObject($argument);
@@ -38,66 +59,108 @@ class Field implements FieldInterface
         return $this;
     }
 
-    public function getArguments() : array
+    /**
+     * @return array
+     */
+    public function getArguments()
     {
         return $this->arguments;
     }
 
-    public function addArgument($name, $value) : Field
+    /**
+     * @param  string $name
+     * @param  string $value
+     * @return $this
+     */
+    public function addArgument($name, $value)
     {
         return $this->addArgumentObject(new Argument($name, $value));
     }
 
-    public function addArgumentObject(ArgumentInterface $argument) : Field
+    /**
+     * @param  ArgumentInterface $argument
+     * @return $this
+     */
+    public function addArgumentObject(ArgumentInterface $argument)
     {
         $this->arguments[$argument->getName()] = $argument;
         return $this;
     }
 
-    public function removeArgument(ArgumentInterface $argument) : Field
+    /**
+     * @param  ArgumentInterface $argument
+     * @return $this
+     */
+    public function removeArgument(ArgumentInterface $argument)
     {
         unset($this->arguments[$argument->getName()]);
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function hasArguments()
     {
         return $this->getArgumentsCount() > 0;
     }
 
+    /**
+     * @return int
+     */
     public function getArgumentsCount()
     {
         return count($this->getArguments());
     }
 
-    public function addField(Field $field) : Field
+    /**
+     * @param  FieldInterface $field
+     * @return $this
+     */
+    public function addField(FieldInterface $field)
     {
         $this->fields[$field->getName()] = $field;
         return $this;
     }
 
+    /**
+     * @param  FieldInterface $field
+     * @return $this
+     */
     public function removeField(FieldInterface $field)
     {
         unset($this->fields[$field->getName()]);
         return $this;
     }
 
-    public function getFields() : array
+    /**
+     * @return array
+     */
+    public function getFields()
     {
         return $this->fields;
     }
 
-    public function hasFields() : bool
+    /**
+     * @return bool
+     */
+    public function hasFields()
     {
         return $this->getFieldsCount() > 0;
     }
 
-    public function getFieldsCount(): int
+    /**
+     * @return int
+     */
+    public function getFieldsCount()
     {
         return count($this->getFields());
     }
 
-    public function getFieldString() : string
+    /**
+     * @return string
+     */
+    public function getFieldString()
     {
         $str = $this->getName();
         if ($this->hasArguments()) {
@@ -106,7 +169,10 @@ class Field implements FieldInterface
         return sprintf($str, implode(', ', $this->getArguments()));
     }
 
-    public function __toString() : string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         $toString = $this->getFieldString();
         $fieldsString = '{ %s }';
