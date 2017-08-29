@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/GraphQL/Client/Query/QueryInterface.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/AbstractQuery.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/ArgumentInterface.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/Argument.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/FieldInterface.php';

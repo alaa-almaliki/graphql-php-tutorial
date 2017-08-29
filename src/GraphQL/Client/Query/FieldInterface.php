@@ -79,6 +79,18 @@ interface FieldInterface extends QueryInterface
     public function getFields();
 
     /**
+     * @param  string $name
+     * @return mixed
+     */
+    public function getField($name);
+
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasField($name);
+
+    /**
      * @return bool
      */
     public function hasFields();

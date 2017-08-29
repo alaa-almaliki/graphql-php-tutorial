@@ -9,10 +9,8 @@ use GraphQL\Client\Query\Field\ArgumentInterface;
  * @package GraphQL\Client\Query
  * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
  */
-class Field implements FieldInterface
+class Field extends AbstractQuery implements FieldInterface
 {
-    /** @var  string */
-    private $name;
     /** @var  string */
     private $aliasName;
     /** @var array  */
@@ -28,27 +26,9 @@ class Field implements FieldInterface
      */
     public function __construct($name = null, $aliasName = null, array $arguments = [])
     {
-        $this->name = $name;
+        parent::__construct($name);
         $this->aliasName = $aliasName;
         $this->setArguments($arguments);
-    }
-
-    /**
-     * @param  string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -102,9 +82,15 @@ class Field implements FieldInterface
     /**
      * @param  ArgumentInterface $argument
      * @return $this
+     * @throws QueryException
      */
     public function addArgumentObject(ArgumentInterface $argument)
     {
+        $argName = $argument->getName();
+        if ($this->hasArgument($argName)) {
+            throw new QueryException('Argument with name ' . $argName . ' already exists.');
+        }
+
         $this->arguments[$argument->getName()] = $argument;
         return $this;
     }
@@ -112,11 +98,25 @@ class Field implements FieldInterface
     /**
      * @param  ArgumentInterface $argument
      * @return $this
+     * @throws QueryException
      */
     public function removeArgument(ArgumentInterface $argument)
     {
+        $argName = $argument->getName();
+        if (!$this->hasArgument($argName)) {
+            throw new QueryException('Argument with name ' . $argName . ' does not exist.');
+        }
         unset($this->arguments[$argument->getName()]);
         return $this;
+    }
+
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasArgument($name)
+    {
+        return isset($this->arguments[$name]);
     }
 
     /**
@@ -138,11 +138,30 @@ class Field implements FieldInterface
     /**
      * @param  FieldInterface $field
      * @return $this
+     * @throws QueryException
      */
     public function addField(FieldInterface $field)
     {
+        $fieldName = $field->getName();
+        if ($this->hasField($fieldName)) {
+            throw new QueryException('Field with name ' . $fieldName . ' already exists.');
+        }
         $this->fields[$field->getName()] = $field;
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return FieldInterface
+     * @throws QueryException
+     */
+    public function getField($name)
+    {
+        if (!$this->hasField($name)) {
+            throw new QueryException('Field ' . $name . ' is not found');
+        }
+
+        return $this->fields[$name];
     }
 
     /**
@@ -161,6 +180,15 @@ class Field implements FieldInterface
     public function getFields()
     {
         return $this->fields;
+    }
+
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasField($name)
+    {
+        return isset($this->fields[$name]);
     }
 
     /**

@@ -1,15 +1,15 @@
 <?php
 namespace GraphQL\Client\Query\Field;
 
+use GraphQL\Client\Query\AbstractQuery;
+
 /**
  * Class Argument
  * @package GraphQL\Client\Query\Field
  * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
  */
-class Argument implements ArgumentInterface
+class Argument extends AbstractQuery implements ArgumentInterface
 {
-    /** @var  string */
-    private $name;
     /** @var  string */
     private $value;
 
@@ -20,26 +20,8 @@ class Argument implements ArgumentInterface
      */
     public function __construct($name = null, $value = null)
     {
-        $this->setName($name);
+        parent::__construct($name);
         $this->setValue($value);
-    }
-
-    /**
-     * @param  string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**

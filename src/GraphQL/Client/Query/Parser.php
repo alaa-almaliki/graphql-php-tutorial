@@ -23,10 +23,27 @@ class Parser
      * @param array $fields
      * @param string $type
      */
-    public function __construct(array $fields = [], $type = self::QUERY_TYPE_QUERY)
+    public function __construct($type = self::QUERY_TYPE_QUERY, array $fields = [])
     {
-        $this->setFields($fields);
         $this->type = $type;
+        $this->setFields($fields);
+    }
+
+    /**
+     * @param  string $name
+     * @param  array $arguments
+     * @param  string|null $aliasName
+     * @return Field
+     */
+    private function createNewField($name, array $arguments = [], $aliasName = null)
+    {
+        $field = new Field($name);
+        $field->setAliasName($aliasName);
+        foreach ($arguments as $argName => $argValue) {
+            $this->_addArgumentToField($field, $argName, $argValue);
+        }
+
+        return $field;
     }
 
     /**
@@ -37,13 +54,22 @@ class Parser
      */
     public function addNewField($name, array $arguments = [], $aliasName = null)
     {
-        $field = new Field($name);
-        $field->setAliasName($aliasName);
-        foreach ($arguments as $argName => $argValue) {
-            $this->_addArgumentToField($field, $argName, $argValue);
-        }
+        return $this->addFieldObject($this->createNewField($name, $arguments, $aliasName));
+    }
 
-        return $this->addFieldObject($field);
+    /**
+     * @param  string $parentName
+     * @param  string $childName
+     * @param  array $arguments
+     * @param  string|null $aliasName
+     * @return $this
+     */
+    public function addChildField($parentName, $childName, array $arguments = [], $aliasName = null)
+    {
+        $parentField = $this->getField($parentName);
+        $childField  = $this->createNewField($childName, $arguments, $aliasName);
+        $parentField->addField($childField);
+        return $this;
     }
 
     /**
@@ -78,6 +104,28 @@ class Parser
     }
 
     /**
+     * @param  string $name
+     * @param  string $aliasName
+     * @return mixed
+     */
+    public function setFieldAliasName($name, $aliasName)
+    {
+        $field = $this->getField($name);
+        return $field->setAliasName($aliasName);
+    }
+
+    /**
+     * @param  FieldInterface $field
+     * @param  string $aliasName
+     * @return $this
+     */
+    protected function _setFieldAliasName(FieldInterface $field, $aliasName)
+    {
+        $field->setAliasName($aliasName);
+        return $this;
+    }
+
+    /**
      * @param  FieldInterface $field
      * @param  string $argName
      * @param  string|int|mixed $argValue
@@ -95,13 +143,18 @@ class Parser
 
     /**
      * @param  string $name
+     * @param  string $parentName
      * @return FieldInterface
      * @throws QueryException
      */
-    public function getField($name)
+    public function getField($name, $parentName = null)
     {
-        if (!isset($this->fields[$name])) {
-            throw new QueryException('There is no field with name: ' . $name);
+        if ($parentName !== null) {
+            foreach ($this->getFields() as $fieldName => $field) {
+                if ($parentName === $fieldName) {
+                    return $field->getField($name);
+                }
+            }
         }
 
         return $this->fields[$name];
