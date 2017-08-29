@@ -7,7 +7,7 @@ $url = 'http://development.local/graphql/examples/001/helloworld.php';
 $field = new \GraphQL\Client\Query\Field();
 $field->setName('greetings');
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->addField($field);
+$parser->addFieldObject($field);
 $query =  $parser->parse(); // '{"query": "query { greetings }"}'
 
 $result = $client['send']($url, $query);

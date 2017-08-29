@@ -2,8 +2,9 @@
 namespace GraphQL\Client\Query;
 
 use GraphQL\Client\Query\Field\Argument;
+use GraphQL\Client\Query\Field\ArgumentInterface;
 
-class Field
+class Field implements FieldInterface
 {
     /** @var  string */
     private $name;
@@ -47,13 +48,13 @@ class Field
         return $this->addArgumentObject(new Argument($name, $value));
     }
 
-    public function addArgumentObject(Argument $argument) : Field
+    public function addArgumentObject(ArgumentInterface $argument) : Field
     {
         $this->arguments[$argument->getName()] = $argument;
         return $this;
     }
 
-    public function removeArgument(Argument $argument) : Field
+    public function removeArgument(ArgumentInterface $argument) : Field
     {
         unset($this->arguments[$argument->getName()]);
         return $this;
@@ -75,7 +76,7 @@ class Field
         return $this;
     }
 
-    public function removeField(Field $field)
+    public function removeField(FieldInterface $field)
     {
         unset($this->fields[$field->getName()]);
         return $this;

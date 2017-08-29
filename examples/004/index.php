@@ -5,24 +5,16 @@ $client = include_once '../client.php';
 $url = 'http://development.local/graphql/examples/004/graphql.php';
 #$query = {"query": "query { first_name, last_name, occupation, years, salary, is_php }"};
 
-$firstNameField = new Field('first_name'); // string
-$lastNameField = new Field('last_name'); // string
-$occupationField = new Field('occupation'); // string
-$yearsField = new Field('years'); // int
-$salaryField = new Field('salary'); // decimal
-$isphpField = new Field('is_php'); // bool
-
-
-
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->setFields([
-    $firstNameField,
-    $lastNameField,
-    $occupationField,
-    $yearsField,
-    $salaryField,
-    $isphpField
+$parser->addFields([
+    ['name' => 'first_name'],
+    ['name' => 'last_name'],
+    ['name' => 'occupation'],
+    ['name' => 'years'],
+    ['name' => 'salary'],
+    ['name' => 'is_php'],
 ]);
+
 $query  = $parser->parse(); // {"query": "query { first_name, last_name, occupation, years, salary, is_php }"}
 
 $result = $client['send']($url, $query, true);

@@ -8,7 +8,7 @@ $field = new \GraphQL\Client\Query\Field();
 $field->setName('greetings');
 #$field->addArgument('name', 'Alaa'); // omit the argument - uncomment to use the provided args
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->addField($field);
+$parser->addFieldObject($field);
 $query  = $parser->parse(); // '{"query": "query { greetings(name: \"Alaa\")}"}' | '{"query": "query { greetings }"}'
 
 
