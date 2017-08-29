@@ -56,8 +56,13 @@ class Parser
         return $this->type;
     }
 
-    public function parse()
+    public function parse($print = false)
     {
-        return sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
+        $query =  sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
+        if ($query) {
+            print_r($query);
+        }
+
+        return $query;
     }
 }
