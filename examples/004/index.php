@@ -25,8 +25,6 @@ $parser->setFields([
 ]);
 $query  = $parser->parse(); // {"query": "query { first_name, last_name, occupation, years, salary, is_php }"}
 
-print_r($query);
-
 $result = $client['send']($url, $query, true);
 
 echo '<h1>Employee</h1>';
