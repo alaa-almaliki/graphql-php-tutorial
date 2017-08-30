@@ -224,14 +224,14 @@ class Parser
     }
 
     /**
-     * @param  bool $print
+     * @param  bool $debug
      * @return string
      */
-    public function parse($print = false)
+    public function parse($debug = false)
     {
         $query =  sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
 
-        if ($print) {
+        if ($debug) {
             print_r($query);
         }
 

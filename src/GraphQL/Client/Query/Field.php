@@ -230,11 +230,10 @@ class Field extends AbstractQuery implements FieldInterface
     public function __toString()
     {
         $toString = $this->getFieldString();
-        $fieldsString = '{ %s }';
-        /** @var Field $field */
-        foreach ($this->getFields() as $field) {
-            $toString .= sprintf($fieldsString, $field->getFieldString());
+        if ($this->hasFields()) {
+            $toString .= sprintf('{ %s }', implode(', ', $this->getFields()));
         }
+
         return $toString;
     }
 }
