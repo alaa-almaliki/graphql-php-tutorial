@@ -6,12 +6,11 @@ class User
     private $data = [];
 
     public $id;
-    public $email;
     public $firstName;
     public $lastName;
-    public $city;
+    public $email;
     public $phoneNumber;
-    public $dob;
+
 
     public function __construct()
     {

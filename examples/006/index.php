@@ -5,16 +5,14 @@ $url = 'http://development.local/graphql/examples/006/graphql.php';
 
 $parser = new \GraphQL\Client\Query\Parser();
 $parser->addFields([
-    ['name' => 'user', 'args' => ['id' => 1]],
+    ['name' => 'user', 'args' => ['id' => 3]],
 ]);
 
 $parser->addChildField('user', 'id');
-$parser->addChildField('user', 'email');
 $parser->addChildField('user', 'firstName');
 $parser->addChildField('user', 'lastName');
+$parser->addChildField('user', 'email');
 $parser->addChildField('user', 'phoneNumber');
-$parser->addChildField('user', 'city');
-$parser->addChildField('user', 'dob');
 
 
 $query = $parser->parse();

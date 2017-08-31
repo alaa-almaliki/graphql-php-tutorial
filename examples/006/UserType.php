@@ -12,22 +12,16 @@ class UserType extends ObjectType
             'fields' => function() {
                 return [
                     'id' => Type::id(),
-                    'email' => [
-                        'type' => Type::string()
-                    ],
                     'firstName' => [
                         'type' => Type::string(),
                     ],
                     'lastName' => [
                         'type' => Type::string(),
                     ],
-                    'city' => [
-                        'type' => Type::string(),
+                    'email' => [
+                        'type' => Type::string()
                     ],
                     'phoneNumber' => [
-                        'type' => Type::string(),
-                    ],
-                    'dob' => [
                         'type' => Type::string(),
                     ],
                 ];
