@@ -3,6 +3,7 @@ namespace GraphQL\Client\Query;
 
 use GraphQL\Client\Query\Field\Argument;
 use GraphQL\Client\Query\Field\ArgumentInterface;
+use GraphQL\Client\Query\Fragment\Inline;
 
 /**
  * Class Field
@@ -17,8 +18,10 @@ class Field extends AbstractQuery implements FieldInterface
     private $arguments = [];
     /** @var array  */
     private $fields = [];
-    /** @var  FragmentInterface */
+    /** @var  Fragment */
     private $fragment;
+    /** @var  Inline */
+    private $inlineFragment;
 
     /**
      * Field constructor.
@@ -210,10 +213,10 @@ class Field extends AbstractQuery implements FieldInterface
     }
 
     /**
-     * @param  FragmentInterface $fragment
+     * @param  Fragment $fragment
      * @return $this
      */
-    public function setFragment(FragmentInterface $fragment)
+    public function setFragment(Fragment$fragment)
     {
         $this->fragment = $fragment;
         return $this;
@@ -225,6 +228,32 @@ class Field extends AbstractQuery implements FieldInterface
     public function getFragment()
     {
         return $this->fragment;
+    }
+
+    /**
+     * @param Inline $inlineFragment
+     * @return $this
+     */
+    public function setInlineFragment(Inline $inlineFragment)
+    {
+        $this->inlineFragment = $inlineFragment;
+        return $this;
+    }
+
+    /**
+     * @return Inline
+     */
+    public function getInlineFragment()
+    {
+        return $this->inlineFragment;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasInlineFragment()
+    {
+        return $this->inlineFragment !== null;
     }
 
     /**
@@ -255,17 +284,48 @@ class Field extends AbstractQuery implements FieldInterface
     /**
      * @return string
      */
+    protected function getFragmentString()
+    {
+        $fragmentStr = '';
+
+        if ($this->hasFragment()) {
+            $fragmentStr .= '...' . $this->getFragment()->getName();
+        }
+
+        return $fragmentStr;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInlineFragmentString()
+    {
+        $fragmentStr = '';
+
+        if ($this->hasInlineFragment()) {
+            $fragmentStr .= $this->getInlineFragment();
+        }
+
+        return $fragmentStr;
+    }
+
+    /**
+     * @return string
+     */
+    protected function constructFragments()
+    {
+        return sprintf('%s %s', $this->getFragmentString(), $this->getInlineFragmentString());
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $toString = $this->getFieldString();
         if ($this->hasFields()) {
-            $fragmentStr = '';
 
-            if ($this->hasFragment()) {
-                $fragmentStr .= '...' . $this->getFragment()->getName();
-            }
-
-            $toString .= sprintf('{ %s, %s}', implode(', ', $this->getFields()), $fragmentStr);
+            $toString .= sprintf('{ %s,  %s}', implode(', ', $this->getFields()), $this->constructFragments());
         }
 
         return $toString;

@@ -6,7 +6,10 @@ require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/Argument.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/FieldInterface.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/FragmentInterface.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/AbstractFragment.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Fragment.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/Fragment/Inline.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/Fragment/Data/Normaliser.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Parser.php';
 
 return [

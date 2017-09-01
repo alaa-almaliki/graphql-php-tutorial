@@ -2,6 +2,7 @@
 namespace GraphQL\Client\Query;
 
 use GraphQL\Client\Query\Field\ArgumentInterface;
+use GraphQL\Client\Query\Fragment\Inline;
 
 /**
  * Interface FieldInterface
@@ -106,13 +107,13 @@ interface FieldInterface extends QueryInterface
     public function getFieldString();
 
     /**
-     * @param  FragmentInterface $fragment
+     * @param  Fragment $fragment
      * @return mixed
      */
-    public function setFragment(FragmentInterface $fragment);
+    public function setFragment(Fragment $fragment);
 
     /**
-     * @return FragmentInterface
+     * @return Fragment
      */
     public function getFragment();
 
@@ -120,4 +121,20 @@ interface FieldInterface extends QueryInterface
      * @return bool
      */
     public function hasFragment();
+
+    /**
+     * @param Inline $inlineFragment
+     * @return mixed
+     */
+    public function setInlineFragment(Inline $inlineFragment);
+
+    /**
+     * @return Inline
+     */
+    public function getInlineFragment();
+
+    /**
+     * @return bool
+     */
+    public function hasInlineFragment();
 }

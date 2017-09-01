@@ -1,19 +1,21 @@
 <?php
-namespace GraphQL\Client\Query;
+namespace GraphQL\Client\Query\Fragment;
+
+use GraphQL\Client\Query\AbstractFragment;
 
 /**
- * Class Fragment
- * @package GraphQL\Client\Query
+ * Class Inline
+ * @package GraphQL\Client\Query\Fragment
  * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
  */
-class Fragment extends AbstractFragment
+class Inline extends AbstractFragment
 {
     /**
      * @return string
      */
     protected function getFragmentStr()
     {
-        return 'fragment %s on %s { %s }';
+        return '...on %s { %s }';
     }
 
     /**
@@ -23,7 +25,6 @@ class Fragment extends AbstractFragment
     {
         return sprintf(
             $this->getFragmentStr(),
-            $this->getName(),
             $this->getTypeName(),
             $this->getFieldString($this->getFields())
         );

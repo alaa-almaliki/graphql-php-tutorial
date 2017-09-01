@@ -1,6 +1,9 @@
 <?php
 namespace GraphQL\Client\Query;
 
+use GraphQL\Client\Query\Fragment\Data\Normaliser;
+use GraphQL\Client\Query\Fragment\Inline;
+
 /**
  * Class Parser
  * @package GraphQL\Client\Query
@@ -18,7 +21,7 @@ class Parser
     /** @var array  */
     private $fields = [];
     /** @var array  */
-    private $fragements = [];
+    private $fragments = [];
 
     /**
      * Parser constructor.
@@ -241,44 +244,42 @@ class Parser
     }
 
     /**
+     * @param  string $typeName
+     * @param  array $fields
+     * @return Fragment
+     */
+    public function createInlineFragment($typeName, array $fields)
+    {
+        return $this->createFragment(null, $typeName, $fields);
+    }
+
+    /**
+     * @param  string $fieldName
+     * @param  array $fragmentData
+     * @return $this
+     */
+    public function addInlineFragmentToField($fieldName, array $fragmentData)
+    {
+        $normalised = Normaliser::normalise($fragmentData);
+        $inlineFragment = new Inline();
+        $inlineFragment->setTypeName($normalised['type']);
+        $inlineFragment->setFields($normalised['fields']);
+        $this->getField($fieldName)->setInlineFragment($inlineFragment);
+        return $this;
+    }
+
+    /**
      * @param  array $fragmentData
      * @return Parser
      */
     public function addFragment(array $fragmentData)
     {
-        $normalisedData = $this->normaliseFragmentData($fragmentData);
+        $normalisedData = Normaliser::normalise($fragmentData);
 
         return $this->addFragmentObject(
             $fragmentData['field'],
             $this->createFragment($normalisedData['name'], $normalisedData['type'], $normalisedData['fields'])
         );
-    }
-
-    /**
-     * @param  array $data
-     * @return array
-     */
-    private function normaliseFragmentData(array $data)
-    {
-        $normalised = [];
-
-        foreach ($data as $key => $value) {
-            if (in_array($key, ['field', 'field_name'])) {
-                $normalised['field'] = $value;
-            }
-
-            if (in_array($key, ['fragment_name', 'name', 'fragment'])) {
-                $normalised['name'] = $value;
-            }
-
-            if (in_array($key, ['type', 'type_name'])) {
-                $normalised['type'] = $value;
-            }
-        }
-
-        $normalised['fields'] = $data['fields'];
-
-        return $normalised;
     }
 
     /**
@@ -296,11 +297,11 @@ class Parser
 
     /**
      * @param  string $fieldName
-     * @param  FragmentInterface $fragment
+     * @param  Fragment $fragment
      * @return $this
      * @throws QueryException
      */
-    public function addFragmentObject($fieldName, FragmentInterface $fragment)
+    public function addFragmentObject($fieldName, Fragment $fragment)
     {
         if ($this->hasFragment($fieldName, $fragment)) {
             $msg = sprintf(
@@ -311,7 +312,7 @@ class Parser
             throw new QueryException($msg);
         }
 
-        $this->fragements[$fieldName] = $fragment;
+        $this->fragments[$fieldName] = $fragment;
         $this->getField($fieldName)->setFragment($fragment);
         return $this;
     }
@@ -332,7 +333,7 @@ class Parser
             );
             throw new QueryException($msg);
         }
-        unset($this->fragements[$fieldName]);
+        unset($this->fragments[$fieldName]);
         return $this;
     }
 
@@ -343,8 +344,8 @@ class Parser
      */
     public function hasFragment($fieldName, FragmentInterface $fragment)
     {
-        return isset($this->fragements[$fieldName]) &&
-            $this->fragements[$fieldName]->getName() === $fragment->getName();
+        return isset($this->fragments[$fieldName]) &&
+            $this->fragments[$fieldName]->getName() === $fragment->getName();
     }
 
     /**
@@ -360,7 +361,7 @@ class Parser
      */
     public function getFragmentsCount()
     {
-        return count($this->fragements);
+        return count($this->fragments);
     }
 
     /**
@@ -368,7 +369,7 @@ class Parser
      */
     public function getFragments()
     {
-        return $this->fragements;
+        return $this->fragments;
     }
 
     /**
