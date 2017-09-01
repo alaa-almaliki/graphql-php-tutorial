@@ -104,4 +104,20 @@ interface FieldInterface extends QueryInterface
      * @return string
      */
     public function getFieldString();
+
+    /**
+     * @param  FragmentInterface $fragment
+     * @return mixed
+     */
+    public function setFragment(FragmentInterface $fragment);
+
+    /**
+     * @return FragmentInterface
+     */
+    public function getFragment();
+
+    /**
+     * @return bool
+     */
+    public function hasFragment();
 }

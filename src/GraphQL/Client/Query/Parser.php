@@ -12,11 +12,13 @@ class Parser
     const QUERY_TYPE_MUTATION = 'mutation';
 
     /** @var string  */
-    private $queryString = '{"query": "%s { %s }"}';
+    private $queryString = '{"query": "%s { %s } %s "}';
     /** @var string  */
     private $type;
     /** @var array  */
     private $fields = [];
+    /** @var array  */
+    private $fragements = [];
 
     /**
      * Parser constructor.
@@ -224,12 +226,168 @@ class Parser
     }
 
     /**
+     * @param  string $fragmentName
+     * @param  string $typeName
+     * @param  array $fields
+     * @return Fragment
+     */
+    public function createFragment($fragmentName, $typeName, array $fields)
+    {
+        $fragment = new Fragment($fragmentName);
+        $fragment->setTypeName($typeName)
+            ->setFields($fields);
+
+        return $fragment;
+    }
+
+    /**
+     * @param  array $fragmentData
+     * @return Parser
+     */
+    public function addFragment(array $fragmentData)
+    {
+        $normalisedData = $this->normaliseFragmentData($fragmentData);
+
+        return $this->addFragmentObject(
+            $fragmentData['field'],
+            $this->createFragment($normalisedData['name'], $normalisedData['type'], $normalisedData['fields'])
+        );
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     */
+    private function normaliseFragmentData(array $data)
+    {
+        $normalised = [];
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, ['field', 'field_name'])) {
+                $normalised['field'] = $value;
+            }
+
+            if (in_array($key, ['fragment_name', 'name', 'fragment'])) {
+                $normalised['name'] = $value;
+            }
+
+            if (in_array($key, ['type', 'type_name'])) {
+                $normalised['type'] = $value;
+            }
+        }
+
+        $normalised['fields'] = $data['fields'];
+
+        return $normalised;
+    }
+
+    /**
+     * @param  array $fragments
+     * @return $this
+     */
+    public function addFragments(array $fragments)
+    {
+        foreach ($fragments as $fragment) {
+            $this->addFragment($fragment);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  string $fieldName
+     * @param  FragmentInterface $fragment
+     * @return $this
+     * @throws QueryException
+     */
+    public function addFragmentObject($fieldName, FragmentInterface $fragment)
+    {
+        if ($this->hasFragment($fieldName, $fragment)) {
+            $msg = sprintf(
+                'Fragment %s already associated with field %s',
+                $fragment->getName(),
+                $fieldName
+            );
+            throw new QueryException($msg);
+        }
+
+        $this->fragements[$fieldName] = $fragment;
+        $this->getField($fieldName)->setFragment($fragment);
+        return $this;
+    }
+
+    /**
+     * @param  string $fieldName
+     * @param  FragmentInterface $fragment
+     * @return $this
+     * @throws QueryException
+     */
+    public function removeFragment($fieldName, FragmentInterface $fragment)
+    {
+        if (!$this->hasFragment($fieldName, $fragment)) {
+            $msg = sprintf(
+                'Fragment %s is not associated with field %s',
+                $fragment->getName(),
+                $fieldName
+            );
+            throw new QueryException($msg);
+        }
+        unset($this->fragements[$fieldName]);
+        return $this;
+    }
+
+    /**
+     * @param  string $fieldName
+     * @param  FragmentInterface $fragment
+     * @return bool
+     */
+    public function hasFragment($fieldName, FragmentInterface $fragment)
+    {
+        return isset($this->fragements[$fieldName]) &&
+            $this->fragements[$fieldName]->getName() === $fragment->getName();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFragments()
+    {
+        return $this->getFragmentsCount() > 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFragmentsCount()
+    {
+        return count($this->fragements);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFragments()
+    {
+        return $this->fragements;
+    }
+
+    /**
      * @param  bool $debug
      * @return string
      */
     public function parse($debug = false)
     {
-        $query =  sprintf($this->queryString, $this->getType(), implode(', ', $this->getFields()));
+        $fragmentStr = '';
+        if ($this->hasFragments()) {
+            $fragmentStr .= implode(', ', $this->getFragments());
+        }
+
+        $query =  sprintf(
+            $this->queryString,
+            $this->getType(),
+            implode(', ', $this->getFields()),
+            $fragmentStr
+        );
 
         if ($debug) {
             print_r($query);

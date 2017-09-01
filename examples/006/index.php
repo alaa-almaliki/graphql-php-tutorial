@@ -21,5 +21,4 @@ $query = $parser->parse();
 $result = $client['send']($url, $query, true);
 
 echo '<pr />';
-
 echo implode('<br />', $result['data']['user']);

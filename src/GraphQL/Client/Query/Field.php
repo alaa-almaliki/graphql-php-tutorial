@@ -17,6 +17,8 @@ class Field extends AbstractQuery implements FieldInterface
     private $arguments = [];
     /** @var array  */
     private $fields = [];
+    /** @var  FragmentInterface */
+    private $fragment;
 
     /**
      * Field constructor.
@@ -208,6 +210,32 @@ class Field extends AbstractQuery implements FieldInterface
     }
 
     /**
+     * @param  FragmentInterface $fragment
+     * @return $this
+     */
+    public function setFragment(FragmentInterface $fragment)
+    {
+        $this->fragment = $fragment;
+        return $this;
+    }
+
+    /**
+     * @return FragmentInterface
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFragment()
+    {
+        return $this->fragment !== null;
+    }
+
+    /**
      * @return string
      */
     public function getFieldString()
@@ -231,7 +259,13 @@ class Field extends AbstractQuery implements FieldInterface
     {
         $toString = $this->getFieldString();
         if ($this->hasFields()) {
-            $toString .= sprintf('{ %s }', implode(', ', $this->getFields()));
+            $fragmentStr = '';
+
+            if ($this->hasFragment()) {
+                $fragmentStr .= '...' . $this->getFragment()->getName();
+            }
+
+            $toString .= sprintf('{ %s, %s}', implode(', ', $this->getFields()), $fragmentStr);
         }
 
         return $toString;

@@ -20,7 +20,7 @@ abstract class AbstractQuery implements QueryInterface
      * AbstractQuery constructor.
      * @param  string $name
      */
-    public function __construct($name)
+    public function __construct($name = null)
     {
         $this->setName($name);
     }
