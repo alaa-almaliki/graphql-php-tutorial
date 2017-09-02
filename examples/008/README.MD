@@ -1,3 +1,3 @@
-#### Query with custom types and retrieve data from database and use of fragment
+#### Query with custom types and retrieve data from database and use of inline fragment
 
-Web access `/graphql-php-tutorial/examples/007/`
+Web access `/graphql-php-tutorial/examples/009/`

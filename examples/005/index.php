@@ -4,7 +4,9 @@ $client = include_once '../client.php';
 $url = 'http://development.local/graphql/examples/005/graphql.php';
 
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->addFields([
+$queryBuilder = $parser->createQueryBuilder('person');
+
+$queryBuilder->addFields([
     ['name' => 'first_name', 'alias_name' => 'firstName'],
     ['name' => 'last_name', 'alias_name' => 'lastName'],
     ['name' => 'occupation',  'alias_name' => 'job'],
@@ -13,7 +15,7 @@ $parser->addFields([
     ['name' => 'is_php',  'alias_name' => 'php'],
 ]);
 
-$query  = $parser->parse(); // {"query": "query { firstName : first_name, lastName : last_name, job : occupation, experience : years, income : salary, php : is_php }"}
+$query  = $parser->parse(true); // {"query":"query person { firstName : first_name, lastName : last_name, job : occupation, experience : years, income : salary, php : is_php } "}
 
 
 $result = $client['send']($url, $query, true);

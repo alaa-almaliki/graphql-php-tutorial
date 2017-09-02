@@ -2,6 +2,7 @@
 namespace GraphQL\Client\Query\Field;
 
 use GraphQL\Client\Query\AbstractQuery;
+use GraphQL\Client\Query\Field\Argument\ValueResolver;
 
 /**
  * Class Argument
@@ -25,16 +26,12 @@ class Argument extends AbstractQuery implements ArgumentInterface
     }
 
     /**
-     * copied from stackoverflow
-     * @link https://stackoverflow.com/questions/1048487/phps-json-encode-does-not-escape-all-json-control-characters/3615890#3615890
      * @param int|string $value
      * @return $this
      */
     public function setValue($value)
     {
-        $escapers = array("\\", "/", "\"", "\n", "\r", "\t", "\x08", "\x0c");
-        $replacements = array("\\\\", "\\/", "\\\"", "\\n", "\\r", "\\t", "\\f", "\\b");
-        $this->value = str_replace($escapers, $replacements, json_encode($value));
+        $this->value = ValueResolver::resolve($value);
         return $this;
     }
 

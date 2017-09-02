@@ -4,18 +4,20 @@ $client = include_once '../client.php';
 $url = 'http://development.local/graphql/examples/006/graphql.php';
 
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->addFields([
+$queryBuilder = $parser->createQueryBuilder('person');
+
+$queryBuilder->addFields([
     ['name' => 'user', 'args' => ['id' => 3]],
 ]);
 
-$parser->addChildField('user', 'id');
-$parser->addChildField('user', 'firstName');
-$parser->addChildField('user', 'lastName');
-$parser->addChildField('user', 'email');
-$parser->addChildField('user', 'phoneNumber');
+$queryBuilder->addChildField('user', 'id');
+$queryBuilder->addChildField('user', 'firstName');
+$queryBuilder->addChildField('user', 'lastName');
+$queryBuilder->addChildField('user', 'email');
+$queryBuilder->addChildField('user', 'phoneNumber');
 
 
-$query = $parser->parse();
+$query = $parser->parse(true); // {"query":"query person { user( id: 3 ){ id, firstName, lastName, email, phoneNumber, } } "}
 
 
 $result = $client['send']($url, $query, true);

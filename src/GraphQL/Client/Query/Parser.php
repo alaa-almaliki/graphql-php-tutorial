@@ -1,9 +1,6 @@
 <?php
 namespace GraphQL\Client\Query;
 
-use GraphQL\Client\Query\Fragment\Data\Normaliser;
-use GraphQL\Client\Query\Fragment\Inline;
-
 /**
  * Class Parser
  * @package GraphQL\Client\Query
@@ -11,365 +8,50 @@ use GraphQL\Client\Query\Fragment\Inline;
  */
 class Parser
 {
-    const QUERY_TYPE_QUERY = 'query';
-    const QUERY_TYPE_MUTATION = 'mutation';
-
-    /** @var string  */
-    private $queryString = '{"query": "%s { %s } %s "}';
-    /** @var string  */
-    private $type;
     /** @var array  */
-    private $fields = [];
-    /** @var array  */
-    private $fragments = [];
+    private $queries = [];
+    /** @var  QueryBuilder */
+    private $currentQueryBuilder;
 
     /**
-     * Parser constructor.
-     * @param array $fields
-     * @param string $type
-     */
-    public function __construct($type = self::QUERY_TYPE_QUERY, array $fields = [])
-    {
-        $this->type = $type;
-        $this->setFields($fields);
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @param  string|null $aliasName
-     * @return Field
-     */
-    private function createNewField($name, array $arguments = [], $aliasName = null)
-    {
-        $field = new Field($name);
-        $field->setAliasName($aliasName);
-        foreach ($arguments as $argName => $argValue) {
-            $this->_addArgumentToField($field, $argName, $argValue);
-        }
-
-        return $field;
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @param  string|null $aliasName
-     * @return Parser
-     */
-    public function addNewField($name, array $arguments = [], $aliasName = null)
-    {
-        return $this->addFieldObject($this->createNewField($name, $arguments, $aliasName));
-    }
-
-    /**
-     * @param  string $parentName
-     * @param  string $childName
-     * @param  array $arguments
-     * @param  string|null $aliasName
-     * @return $this
-     */
-    public function addChildField($parentName, $childName, array $arguments = [], $aliasName = null)
-    {
-        $parentField = $this->getField($parentName);
-        $childField  = $this->createNewField($childName, $arguments, $aliasName);
-        $parentField->addField($childField);
-        return $this;
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @return $this
-     */
-    public function addArgumentsToField($name, array $arguments = [])
-    {
-        $field = $this->getField($name);
-        foreach ($arguments as $argName => $argValue) {
-            $this->_addArgumentToField($field, $argName, $argValue);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param  string $name
-     * @param  string $argName
-     * @param  string|int|mixed $argValue
-     * @return $this
+     * The query name is made required here
+     * to ensure good practices so to track query builders in Parser object
+     *
+     * @param  string $queryName
+     * @param  string $queryType
+     * @return QueryBuilder
      * @throws QueryException
      */
-    public function addArgumentToField($name, $argName, $argValue)
+    public function createQueryBuilder($queryName, $queryType = Type::QUERY_TYPE_QUERY)
     {
-        if (empty($argName) || empty($argValue)) {
-            throw new QueryException('Argument has no name or value.');
+        if (!$queryName) {
+            throw new QueryException(self::class . ': Query name is required');
         }
-        $this->_addArgumentToField($this->getField($name), $argName, $argValue);
-        return $this;
+
+        $this->currentQueryBuilder = new QueryBuilder($queryName, $queryType);
+        $this->queries[$this->currentQueryBuilder->getName()] = $this->currentQueryBuilder;
+        return $this->currentQueryBuilder;
     }
 
     /**
-     * @param  string $name
-     * @param  string $aliasName
-     * @return mixed
-     */
-    public function setFieldAliasName($name, $aliasName)
-    {
-        $field = $this->getField($name);
-        return $field->setAliasName($aliasName);
-    }
-
-    /**
-     * @param  FieldInterface $field
-     * @param  string $aliasName
-     * @return $this
-     */
-    protected function _setFieldAliasName(FieldInterface $field, $aliasName)
-    {
-        $field->setAliasName($aliasName);
-        return $this;
-    }
-
-    /**
-     * @param  FieldInterface $field
-     * @param  string $argName
-     * @param  string|int|mixed $argValue
-     * @param  string|null $aliasName
-     * @return $this
-     */
-    protected function _addArgumentToField(FieldInterface $field, $argName, $argValue, $aliasName = null)
-    {
-        $field->addArgument($argName, $argValue);
-        if ($aliasName !== null) {
-            $field->setAliasName($aliasName);
-        }
-        return $this;
-    }
-
-    /**
-     * @param  string $name
-     * @param  string $parentName
-     * @return FieldInterface
+     * To get specific query builder, pass in the query name, else get the last created query builder
+     *
+     * @param  null|string $queryName
+     * @return QueryBuilder|mixed
      * @throws QueryException
      */
-    public function getField($name, $parentName = null)
+    public function getQueryBuilder($queryName = null)
     {
-        if ($parentName !== null) {
-            foreach ($this->getFields() as $fieldName => $field) {
-                if ($parentName === $fieldName) {
-                    return $field->getField($name);
-                }
-            }
+        if ($queryName === null) {
+            return $this->currentQueryBuilder;
         }
 
-        return $this->fields[$name];
-    }
-
-    /**
-     * @param  FieldInterface $field
-     * @return Parser
-     */
-    public function addFieldObject(FieldInterface $field)
-    {
-        $this->fields[$field->getName()] = $field;
-        return $this;
-    }
-
-    /**
-     * @param  array $fields
-     * @return $this
-     */
-    public function addFields(array $fields = [])
-    {
-        foreach ($fields as $field) {
-            $aliasName = isset($field['alias_name']) ? $field['alias_name'] : null;
-            $args = isset($field['args']) ? $field['args'] : [];
-            $this->addNewField($field['name'], $args, $aliasName);
-        }
-        return $this;
-    }
-
-    /**
-     * @param  array $fields
-     * @return Parser
-     */
-    public function setFields(array $fields)
-    {
-        foreach ($fields as $field) {
-            $this->addFieldObject($field);
+        if (!isset($this->queries[$queryName])) {
+            throw new QueryException('Can not found QueryBuilder with name: ' . $queryName);
         }
 
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    /**
-     * @param  string $type
-     * @return Parser
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param  string $fragmentName
-     * @param  string $typeName
-     * @param  array $fields
-     * @return Fragment
-     */
-    public function createFragment($fragmentName, $typeName, array $fields)
-    {
-        $fragment = new Fragment($fragmentName);
-        $fragment->setTypeName($typeName)
-            ->setFields($fields);
-
-        return $fragment;
-    }
-
-    /**
-     * @param  string $typeName
-     * @param  array $fields
-     * @return Fragment
-     */
-    public function createInlineFragment($typeName, array $fields)
-    {
-        return $this->createFragment(null, $typeName, $fields);
-    }
-
-    /**
-     * @param  string $fieldName
-     * @param  array $fragmentData
-     * @return $this
-     */
-    public function addInlineFragmentToField($fieldName, array $fragmentData)
-    {
-        $normalised = Normaliser::normalise($fragmentData);
-        $inlineFragment = new Inline();
-        $inlineFragment->setTypeName($normalised['type']);
-        $inlineFragment->setFields($normalised['fields']);
-        $this->getField($fieldName)->setInlineFragment($inlineFragment);
-        return $this;
-    }
-
-    /**
-     * @param  array $fragmentData
-     * @return Parser
-     */
-    public function addFragment(array $fragmentData)
-    {
-        $normalisedData = Normaliser::normalise($fragmentData);
-
-        return $this->addFragmentObject(
-            $fragmentData['field'],
-            $this->createFragment($normalisedData['name'], $normalisedData['type'], $normalisedData['fields'])
-        );
-    }
-
-    /**
-     * @param  array $fragments
-     * @return $this
-     */
-    public function addFragments(array $fragments)
-    {
-        foreach ($fragments as $fragment) {
-            $this->addFragment($fragment);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param  string $fieldName
-     * @param  Fragment $fragment
-     * @return $this
-     * @throws QueryException
-     */
-    public function addFragmentObject($fieldName, Fragment $fragment)
-    {
-        if ($this->hasFragment($fieldName, $fragment)) {
-            $msg = sprintf(
-                'Fragment %s already associated with field %s',
-                $fragment->getName(),
-                $fieldName
-            );
-            throw new QueryException($msg);
-        }
-
-        $this->fragments[$fieldName] = $fragment;
-        $this->getField($fieldName)->setFragment($fragment);
-        return $this;
-    }
-
-    /**
-     * @param  string $fieldName
-     * @param  FragmentInterface $fragment
-     * @return $this
-     * @throws QueryException
-     */
-    public function removeFragment($fieldName, FragmentInterface $fragment)
-    {
-        if (!$this->hasFragment($fieldName, $fragment)) {
-            $msg = sprintf(
-                'Fragment %s is not associated with field %s',
-                $fragment->getName(),
-                $fieldName
-            );
-            throw new QueryException($msg);
-        }
-        unset($this->fragments[$fieldName]);
-        return $this;
-    }
-
-    /**
-     * @param  string $fieldName
-     * @param  FragmentInterface $fragment
-     * @return bool
-     */
-    public function hasFragment($fieldName, FragmentInterface $fragment)
-    {
-        return isset($this->fragments[$fieldName]) &&
-            $this->fragments[$fieldName]->getName() === $fragment->getName();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasFragments()
-    {
-        return $this->getFragmentsCount() > 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFragmentsCount()
-    {
-        return count($this->fragments);
-    }
-
-    /**
-     * @return array
-     */
-    public function getFragments()
-    {
-        return $this->fragments;
+        $this->currentQueryBuilder =  $this->queries[$queryName];
+        return $this->currentQueryBuilder;
     }
 
     /**
@@ -378,19 +60,18 @@ class Parser
      */
     public function parse($debug = false)
     {
-        $fragmentStr = '';
-        if ($this->hasFragments()) {
-            $fragmentStr .= implode(', ', $this->getFragments());
+        $variables = [];
+        foreach ($this->currentQueryBuilder->getVariables() as $varName => $var) {
+            $variables[$varName] = $var['value'];
         }
 
-        $query =  sprintf(
-            $this->queryString,
-            $this->getType(),
-            implode(', ', $this->getFields()),
-            $fragmentStr
-        );
+        $queryData = [
+            'query' => (string) $this->currentQueryBuilder,
+            'variables' => $variables
+        ];
 
-        if ($debug) {
+        $query =  json_encode($queryData);
+        if ($debug === true) {
             print_r($query);
         }
 

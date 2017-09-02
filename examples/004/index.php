@@ -3,10 +3,12 @@ use GraphQL\Client\Query\Field;
 $client = include_once '../client.php';
 
 $url = 'http://development.local/graphql/examples/004/graphql.php';
-#$query = {"query": "query { first_name, last_name, occupation, years, salary, is_php }"};
+#$query = '{"query":"query person { first_name, last_name, occupation, years, salary, is_php } "}';
 
 $parser = new \GraphQL\Client\Query\Parser();
-$parser->addFields([
+$queryBuilder = $parser->createQueryBuilder('person');
+
+$queryBuilder->addFields([
     ['name' => 'first_name'],
     ['name' => 'last_name'],
     ['name' => 'occupation'],
@@ -15,7 +17,7 @@ $parser->addFields([
     ['name' => 'is_php'],
 ]);
 
-$query  = $parser->parse(); // {"query": "query { first_name, last_name, occupation, years, salary, is_php }"}
+$query  = $parser->parse(true); // {"query":"query person { first_name, last_name, occupation, years, salary, is_php } "}
 
 $result = $client['send']($url, $query, true);
 
