@@ -13,8 +13,8 @@ class QueryBuilder extends AbstractQuery
 {
     /** @var string */
     private $typeName;
-    /** @var Type  */
-    private $queryType;
+    /** @var KeyWord  */
+    private $keyWord;
     /** @var array  */
     private $fields = [];
     /** @var array  */
@@ -27,13 +27,13 @@ class QueryBuilder extends AbstractQuery
      * @param string|null $name
      * @param string $typeName
      */
-    public function __construct($name = null, $typeName = Type::QUERY_TYPE_QUERY)
+    public function __construct($name = null, $typeName = KeyWord::KEY_WORD_QUERY)
     {
         parent::__construct($name);
-        $this->queryType = new Type();
+        $this->keyWord = new KeyWord();
         $this->variables = new Variables();
 
-        $this->setTypeName($typeName);
+        $this->setQueryKeyWord($typeName);
     }
 
     /**
@@ -66,12 +66,11 @@ class QueryBuilder extends AbstractQuery
 
     /**
      * @param  string $varName
-     * @param  string $varValue
      * @return $this
      */
-    public function removeVariable($varName, $varValue)
+    public function removeVariable($varName)
     {
-        $this->variables->removeVariable($varName, $varValue);
+        $this->variables->removeVariable($varName);
         return $this;
     }
 
@@ -79,9 +78,9 @@ class QueryBuilder extends AbstractQuery
      * @param  string $typeName
      * @return $this
      */
-    public function setTypeName($typeName)
+    public function setQueryKeyWord($typeName)
     {
-        $this->validateQueryType($typeName);
+        $this->validateQueryKeyWord($typeName);
         $this->typeName = $typeName;
         return $this;
     }
@@ -89,7 +88,7 @@ class QueryBuilder extends AbstractQuery
     /**
      * @return string
      */
-    public function getTypeName()
+    public function getQueryKeyWord()
     {
         return $this->typeName;
     }
@@ -99,9 +98,9 @@ class QueryBuilder extends AbstractQuery
      * @return $this
      * @throws QueryException
      */
-    protected function validateQueryType($queryType)
+    protected function validateQueryKeyWord($queryType)
     {
-        if (!$this->queryType->isValidType($queryType)) {
+        if (!$this->keyWord->isValid($queryType)) {
             throw new QueryException($queryType . ' is not a valid query');
         }
 
@@ -437,7 +436,7 @@ class QueryBuilder extends AbstractQuery
 
         return sprintf(
             '%s %s %s { %s } %s',
-            $this->getTypeName(),
+            $this->getQueryKeyWord(),
             $this->getName(),
             $this->variables->getVariablesConstruct(),
             implode(', ', $this->getFields()),

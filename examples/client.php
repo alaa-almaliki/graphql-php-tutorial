@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../src/GraphQL/Client/Query/Type.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/KeyWord.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/QueryInterface.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/AbstractQuery.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/Argument/ValueResolver.php';

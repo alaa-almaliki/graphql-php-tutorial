@@ -33,6 +33,6 @@ $query = $parser->parse(true); // {"query":"query person ( $id : Int ) { user( i
 
 $result = $client['send']($url, $query, true);
 echo '<br />';
-print_r($result);
+
 echo '<pr />';
 echo implode('<br />', $result['data']['user']);

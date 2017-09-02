@@ -6,25 +6,25 @@ namespace GraphQL\Client\Query;
  * @package GraphQL\Client\Query
  * @author Alaa Al-Maliki <alaa.almaliki@gmail.com>
  */
-class Type
+class KeyWord
 {
-    const QUERY_TYPE_QUERY      = 'query';
-    const QUERY_TYPE_MUTATION   = 'mutation';
+    const KEY_WORD_QUERY      = 'query';
+    const KEY_WORD_MUTATION   = 'mutation';
 
     /**
      * @return string
      */
-    public function getQueryType()
+    public function getQuery()
     {
-        return self::QUERY_TYPE_QUERY;
+        return self::KEY_WORD_QUERY;
     }
 
     /**
      * @return string
      */
-    public function getMutationType()
+    public function getMutation()
     {
-        return self::QUERY_TYPE_MUTATION;
+        return self::KEY_WORD_MUTATION;
     }
 
     /**
@@ -33,7 +33,7 @@ class Type
      */
     public function isQuery($type)
     {
-        return $type === self::QUERY_TYPE_QUERY;
+        return $type === self::KEY_WORD_QUERY;
     }
 
     /**
@@ -42,14 +42,14 @@ class Type
      */
     public function isMutation($type)
     {
-        return $type === self::QUERY_TYPE_MUTATION;
+        return $type === self::KEY_WORD_MUTATION;
     }
 
     /**
      * @param  string $type
      * @return bool
      */
-    public function isValidType($type)
+    public function isValid($type)
     {
         return in_array($type, $this->getAvailableTypes());
     }
@@ -60,8 +60,8 @@ class Type
     public function getAvailableTypes()
     {
         return [
-            self::QUERY_TYPE_QUERY,
-            self::QUERY_TYPE_MUTATION,
+            self::KEY_WORD_QUERY,
+            self::KEY_WORD_MUTATION,
         ];
     }
 }

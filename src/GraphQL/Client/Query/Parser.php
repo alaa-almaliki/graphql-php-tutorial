@@ -22,7 +22,7 @@ class Parser
      * @return QueryBuilder
      * @throws QueryException
      */
-    public function createQueryBuilder($queryName, $queryType = Type::QUERY_TYPE_QUERY)
+    public function createQueryBuilder($queryName, $queryType = KeyWord::KEY_WORD_QUERY)
     {
         if (!$queryName) {
             throw new QueryException(self::class . ': Query name is required');
