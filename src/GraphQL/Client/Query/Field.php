@@ -17,26 +17,42 @@ class Field extends AbstractQuery implements FieldInterface
     private $aliasName;
     /** @var array  */
     private $arguments = [];
-    /** @var array  */
-    private $fields = [];
     /** @var  Fragment */
     private $fragment;
     /** @var  Inline */
     private $inlineFragment;
     /** @var  Directive */
     private $directive;
+    /** @var array  */
+    private $fields = [];
 
     /**
      * Field constructor.
      * @param string|null $name
      * @param string|null $aliasName
      * @param array $arguments
+     * @param Fragment $fragment
+     * @param Inline $inlineFragment
+     * @param Directive $directive
+     * @param array $fields
      */
-    public function __construct($name = null, $aliasName = null, array $arguments = [])
+    public function __construct(
+        $name = null,
+        $aliasName = null,
+        array $arguments = [],
+        Fragment $fragment = null,
+        Inline $inlineFragment = null,
+        Directive $directive = null,
+        array $fields = []
+    )
     {
         parent::__construct($name);
-        $this->aliasName = $aliasName;
+        $this->setAliasName($aliasName);
         $this->setArguments($arguments);
+        $this->setFragment($fragment);
+        $this->setInlineFragment($inlineFragment);
+        $this->setDirective($directive);
+        $this->addFields($fields);
     }
 
     /**
@@ -61,7 +77,7 @@ class Field extends AbstractQuery implements FieldInterface
      * @param  array $arguments
      * @return $this
      */
-    public function setArguments(array $arguments = [])
+    public function setArguments(array $arguments)
     {
         foreach ($arguments as $argument) {
             $this->addArgumentObject($argument);
@@ -147,7 +163,7 @@ class Field extends AbstractQuery implements FieldInterface
      * @param  Directive $directive
      * @return $this
      */
-    public function setDirectiveObject(Directive $directive)
+    public function setDirective(Directive $directive = null)
     {
         $this->directive = $directive;
         return $this;
@@ -162,22 +178,25 @@ class Field extends AbstractQuery implements FieldInterface
     }
 
     /**
-     * @param  string $directive
-     * @param  string $operation
-     * @return $this
-     */
-    public function setDirective($directive, $operation)
-    {
-        $this->setDirectiveObject(new Directive($directive, $operation));
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function hasDirective()
     {
         return $this->directive !== null;
+    }
+
+    /**
+     * @param  array $fields
+     * @return $this
+     */
+    public function addFields(array $fields)
+    {
+        /** @var Field $field */
+        foreach ($fields as $field) {
+            $this->addField($field);
+        }
+
+        return $this;
     }
 
     /**
@@ -256,7 +275,7 @@ class Field extends AbstractQuery implements FieldInterface
      * @param  Fragment $fragment
      * @return $this
      */
-    public function setFragment(Fragment$fragment)
+    public function setFragment(Fragment $fragment = null)
     {
         $this->fragment = $fragment;
         return $this;
@@ -274,7 +293,7 @@ class Field extends AbstractQuery implements FieldInterface
      * @param Inline $inlineFragment
      * @return $this
      */
-    public function setInlineFragment(Inline $inlineFragment)
+    public function setInlineFragment(Inline $inlineFragment = null)
     {
         $this->inlineFragment = $inlineFragment;
         return $this;

@@ -6,26 +6,31 @@ $url = 'http://development.local/graphql/examples/009/graphql.php';
 $parser = new \GraphQL\Client\Query\Parser();
 $queryBuilder = $parser->createQueryBuilder('person');
 
-$queryBuilder->addFields([
-    ['name' => 'user', 'args' => ['id' => '$id']],
-]);
-
-$queryBuilder->addChildField('user', 'id');
-
-
-$queryBuilder->addFragment(
-    [
-        'field' => 'user', // the field user
-        'name' => 'requiredFields', // fragment name
-        'type' => 'User', // type name  = query type
-        'fields' => [ // fields are included in the fragment
-            'firstName',
-            'lastName',
-            'email',
-            'phoneNumber'
+$queryBuilder->addNewField([
+    'name' => 'user',
+    'arguments' => [
+        [
+            'name' => 'id',
+            'value' => '$id'
         ]
     ]
-);
+]);
+
+$queryBuilder->addNewField([
+    'name' => 'id'
+], 'user');
+
+
+$queryBuilder->addFragment('user', [
+    'name' => 'requiredField',
+    'type_name' => 'User',
+    'fields' => [
+        'firstName',
+        'lastName',
+        'email',
+        'phoneNumber'
+    ]
+]);
 
 $queryBuilder->addVariable('id', 'Int', 3);
 

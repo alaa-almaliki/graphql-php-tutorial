@@ -11,47 +11,58 @@ class KeyWord
     const KEY_WORD_QUERY      = 'query';
     const KEY_WORD_MUTATION   = 'mutation';
 
+    /** @var  string */
+    private $keyWord;
+
     /**
-     * @return string
+     * KeyWord constructor.
+     * @param string $keyWord
      */
-    public function getQuery()
+    public function __construct($keyWord)
     {
-        return self::KEY_WORD_QUERY;
+        $this->keyWord = $keyWord;
+    }
+
+    /**
+     * @param  string $keyWord
+     * @return $this
+     */
+    public function setKeyword($keyWord)
+    {
+        $this->keyWord = $keyWord;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getMutation()
+    public function getKeyWord()
     {
-        return self::KEY_WORD_MUTATION;
+        return $this->keyWord;
     }
 
     /**
-     * @param  string $type
      * @return bool
      */
-    public function isQuery($type)
+    public function isQuery()
     {
-        return $type === self::KEY_WORD_QUERY;
+        return $this->getKeyWord() === self::KEY_WORD_QUERY;
     }
 
     /**
-     * @param  string $type
      * @return bool
      */
-    public function isMutation($type)
+    public function isMutation()
     {
-        return $type === self::KEY_WORD_MUTATION;
+        return $this->getKeyWord() === self::KEY_WORD_MUTATION;
     }
 
     /**
-     * @param  string $type
      * @return bool
      */
-    public function isValid($type)
+    public function isValid()
     {
-        return in_array($type, $this->getAvailableTypes());
+        return in_array($this->keyWord, $this->getAvailableTypes());
     }
 
     /**

@@ -10,6 +10,12 @@ use GraphQL\Client\Query\AbstractFragment;
  */
 class Inline extends AbstractFragment
 {
+
+    public function __construct($typeName = null, array $fields = [])
+    {
+        parent::__construct(null, $typeName, $fields);
+    }
+
     /**
      * @return string
      */

@@ -6,15 +6,22 @@ $url = 'http://development.local/graphql/examples/006/graphql.php';
 $parser = new \GraphQL\Client\Query\Parser();
 $queryBuilder = $parser->createQueryBuilder('person');
 
-$queryBuilder->addFields([
-    ['name' => 'user', 'args' => ['id' => 3]],
+$queryBuilder->addNewField([
+        'name' => 'user',
+        'arguments' => [
+            [
+                'name' => 'id',
+                'value' => 1
+            ]
+        ]
+
 ]);
 
-$queryBuilder->addChildField('user', 'id');
-$queryBuilder->addChildField('user', 'firstName');
-$queryBuilder->addChildField('user', 'lastName');
-$queryBuilder->addChildField('user', 'email');
-$queryBuilder->addChildField('user', 'phoneNumber');
+$queryBuilder->addNewField(['name' => 'id'], 'user');
+$queryBuilder->addNewField(['name' => 'firstName'], 'user');
+$queryBuilder->addNewField(['name' => 'lastName'], 'user');
+$queryBuilder->addNewField(['name' => 'email'], 'user');
+$queryBuilder->addNewField(['name' => 'phoneNumber'], 'user');
 
 
 $query = $parser->parse(true); // {"query":"query person { user( id: 3 ){ id, firstName, lastName, email, phoneNumber, } } "}

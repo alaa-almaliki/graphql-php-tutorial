@@ -6,29 +6,30 @@ $url = 'http://development.local/graphql/examples/007/graphql.php';
 $parser = new \GraphQL\Client\Query\Parser();
 $queryBuilder = $parser->createQueryBuilder('person');
 
-$queryBuilder->addFields([
-    ['name' => 'user', 'args' => ['id' => 3]],
-]);
-
-$queryBuilder->addChildField('user', 'id');
-//$parser->addChildField('user', 'firstName');
-//$parser->addChildField('user', 'lastName');
-//$parser->addChildField('user', 'email');
-//$parser->addChildField('user', 'phoneNumber');
-
-$queryBuilder->addFragment(
-    [
-        'field' => 'user', // the field user
-        'name' => 'requiredFields', // fragment name
-        'type' => 'User', // type name  = query type
-        'fields' => [ // fields are included in the fragment
+$queryBuilder->addNewField([
+    'name' => 'user',
+    'arguments' => [
+        [
+            'name' => 'id',
+            'value' => 1
+        ]
+    ],
+    'fragment' => [
+        'name' => 'requiredFields',
+        'type_name' => 'User',
+        'fields' => [
             'firstName',
             'lastName',
             'email',
             'phoneNumber'
         ]
     ]
-);
+
+]);
+
+$queryBuilder->addNewField([
+    'name' => 'id'
+], 'user');
 
 $query = $parser->parse(true); // {"query":"query person { user( id: 3 ){ id, ...requiredFields } } fragment requiredFields on User { firstName lastName email phoneNumber }"}
 

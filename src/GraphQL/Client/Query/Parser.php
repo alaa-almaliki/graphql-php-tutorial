@@ -62,13 +62,17 @@ class Parser
     {
         $variables = [];
         foreach ($this->currentQueryBuilder->getVariables() as $varName => $var) {
+            if (isset($var['default_value']) && !isset($var['value'])) {
+                continue;
+            }
+
             $variables[$varName] = $var['value'];
         }
 
-        $queryData = [
-            'query' => (string) $this->currentQueryBuilder,
-            'variables' => $variables
-        ];
+        $queryData = ['query' => (string) $this->currentQueryBuilder];
+        if (!empty($variables)) {
+            $queryData['variables'] = $variables;
+        }
 
         $query =  json_encode($queryData);
         if ($debug === true) {

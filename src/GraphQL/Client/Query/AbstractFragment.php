@@ -13,6 +13,13 @@ abstract class AbstractFragment extends AbstractQuery implements FragmentInterfa
     /** @var array  */
     private $fields = [];
 
+    public function __construct($name = null, $typeName = null, array $fields = [])
+    {
+        parent::__construct($name);
+        $this->setTypeName($typeName);
+        $this->setFields($fields);
+    }
+
     /**
      * @return string
      */

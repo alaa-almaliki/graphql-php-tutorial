@@ -1,8 +1,8 @@
 <?php
 namespace GraphQL\Client\Query;
 
-use GraphQL\Client\Query\Fragment\Data\Normaliser;
-use GraphQL\Client\Query\Fragment\Inline;
+use GraphQL\Client\Query\Utils\Data\Normaliser;
+use GraphQL\Client\Query\Utils\ObjectFactory;
 
 /**
  * Class Query
@@ -11,29 +11,27 @@ use GraphQL\Client\Query\Fragment\Inline;
  */
 class QueryBuilder extends AbstractQuery
 {
-    /** @var string */
-    private $typeName;
     /** @var KeyWord  */
     private $keyWord;
     /** @var array  */
     private $fields = [];
     /** @var array  */
     private $fragments = [];
+    /** @var array  */
+    private $inlineFragments = [];
     /** @var  Variables */
     private $variables;
 
     /**
      * Query constructor.
      * @param string|null $name
-     * @param string $typeName
+     * @param string $keyWord
      */
-    public function __construct($name = null, $typeName = KeyWord::KEY_WORD_QUERY)
+    public function __construct($name = null, $keyWord = KeyWord::KEY_WORD_QUERY)
     {
         parent::__construct($name);
-        $this->keyWord = new KeyWord();
-        $this->variables = new Variables();
-
-        $this->setQueryKeyWord($typeName);
+        $this->keyWord      = new KeyWord($keyWord);
+        $this->variables    = new Variables();
     }
 
     /**
@@ -56,11 +54,12 @@ class QueryBuilder extends AbstractQuery
      * @param  string $varName
      * @param  string $varType
      * @param  string $varValue
+     * @param  string $defaultValue
      * @return $this
      */
-    public function addVariable($varName, $varType, $varValue)
+    public function addVariable($varName, $varType, $varValue, $defaultValue = null)
     {
-        $this->variables->addVariable($varName, $varType, $varValue);
+        $this->variables->addVariable($varName, $varType, $varValue, $defaultValue);
         return $this;
     }
 
@@ -75,147 +74,126 @@ class QueryBuilder extends AbstractQuery
     }
 
     /**
-     * @param  string $typeName
+     * @param  string $keyWord
      * @return $this
      */
-    public function setQueryKeyWord($typeName)
+    public function setKeyWord($keyWord)
     {
-        $this->validateQueryKeyWord($typeName);
-        $this->typeName = $typeName;
+        $this->keyWord->setKeyword($keyWord);
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getQueryKeyWord()
+    public function getKeyWord()
     {
-        return $this->typeName;
+        return $this->keyWord->getKeyWord();
     }
 
     /**
-     * @param  string $queryType
-     * @return $this
-     * @throws QueryException
-     */
-    protected function validateQueryKeyWord($queryType)
-    {
-        if (!$this->keyWord->isValid($queryType)) {
-            throw new QueryException($queryType . ' is not a valid query');
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @param  string|null $aliasName
+     * @param string $name
+     * @param string|null $aliasName
+     * @param array $argumentData
+     * @param array $fragmentData
+     * @param array $inlineFragmentData
+     * @param array $directiveData
+     * @param array $fields
      * @return Field
      */
-    private function createNewField($name, array $arguments = [], $aliasName = null)
+    private function createNewField(
+        $name,
+        $aliasName = null,
+        array $argumentData = [],
+        array $fragmentData = [],
+        array $inlineFragmentData = [],
+        array $directiveData = [],
+        array $fields = []
+    )
     {
-        $field = new Field($name);
-        $field->setAliasName($aliasName);
+        return ObjectFactory::createField(
+            $name,
+            $aliasName,
+            $argumentData,
+            $fragmentData,
+            $inlineFragmentData,
+            $directiveData,
+            $fields
+        );
+    }
+
+    /**
+     * @param  array $fieldData
+     * @param  string|null $parentFieldName
+     * @return $this
+     */
+    public function addNewField(array $fieldData, $parentFieldName = null)
+    {
+        $field = Normaliser::normaliseFieldData($fieldData);
+        $newField = $this->createNewField(
+            $field['name'],
+            $field['alias_name'],
+            $field['arguments'],
+            $field['fragment'],
+            $field['inline_fragment'],
+            $field['directive'],
+            $field['fields']
+        );
+
+        if ($parentFieldName !== null) {
+            $field = $this->getField($parentFieldName);
+            $field->addField($newField);
+        } else {
+            $this->fields[$newField->getName()] = $newField;
+        }
+
+        if ($newField->hasFragment()) {
+            $this->fragments[$newField->getName()] = $newField->getFragment();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  array $data
+     * @return $this
+     */
+    public function addFields(array $data)
+    {
+        foreach ($data as $fieldData) {
+
+            $this->addNewField($fieldData);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  string $fieldName
+     * @param  array $arguments
+     * @param  string|null $parentFieldName
+     * @return $this
+     */
+    public function addArgumentsToField($fieldName, array $arguments, $parentFieldName = null)
+    {
+        $field = $this->getField($fieldName, $parentFieldName);
         foreach ($arguments as $argName => $argValue) {
-            $this->_addArgumentToField($field, $argName, $argValue);
-        }
-
-        return $field;
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @param  string|null $aliasName
-     * @return $this
-     */
-    public function addNewField($name, array $arguments = [], $aliasName = null)
-    {
-        return $this->addFieldObject($this->createNewField($name, $arguments, $aliasName));
-    }
-
-    /**
-     * @param  string $parentName
-     * @param  string $childName
-     * @param  array $arguments
-     * @param  string|null $aliasName
-     * @return $this
-     */
-    public function addChildField($parentName, $childName, array $arguments = [], $aliasName = null)
-    {
-        $parentField = $this->getField($parentName);
-        $childField  = $this->createNewField($childName, $arguments, $aliasName);
-        $parentField->addField($childField);
-        return $this;
-    }
-
-    /**
-     * @param  string $name
-     * @param  array $arguments
-     * @return $this
-     */
-    public function addArgumentsToField($name, array $arguments = [])
-    {
-        $field = $this->getField($name);
-        foreach ($arguments as $argName => $argValue) {
-            $this->_addArgumentToField($field, $argName, $argValue);
+            $field->addArgument($argName, $argValue);
         }
 
         return $this;
     }
 
     /**
-     * @param  string $name
-     * @param  string $argName
-     * @param  string|int|mixed $argValue
-     * @return $this
-     * @throws QueryException
-     */
-    public function addArgumentToField($name, $argName, $argValue)
-    {
-        if (empty($argName) || empty($argValue)) {
-            throw new QueryException('Argument has no name or value.');
-        }
-        $this->_addArgumentToField($this->getField($name), $argName, $argValue);
-        return $this;
-    }
-
-    /**
-     * @param  string $name
+     * @param  string $fieldName
      * @param  string $aliasName
-     * @return mixed
-     */
-    public function setFieldAliasName($name, $aliasName)
-    {
-        $field = $this->getField($name);
-        return $field->setAliasName($aliasName);
-    }
-
-    /**
-     * @param  FieldInterface $field
-     * @param  string $aliasName
+     * @param  string|null $parentFieldName
      * @return $this
      */
-    protected function _setFieldAliasName(FieldInterface $field, $aliasName)
+    public function setFieldAliasName($fieldName, $aliasName, $parentFieldName = null)
     {
+        $field = $this->getField($fieldName, $parentFieldName);
         $field->setAliasName($aliasName);
-        return $this;
-    }
-
-    /**
-     * @param  FieldInterface $field
-     * @param  string $argName
-     * @param  string|int|mixed $argValue
-     * @param  string|null $aliasName
-     * @return $this
-     */
-    protected function _addArgumentToField(FieldInterface $field, $argName, $argValue, $aliasName = null)
-    {
-        $field->addArgument($argName, $argValue);
-        if ($aliasName !== null) {
-            $field->setAliasName($aliasName);
-        }
         return $this;
     }
 
@@ -239,43 +217,6 @@ class QueryBuilder extends AbstractQuery
     }
 
     /**
-     * @param  FieldInterface $field
-     * @return $this
-     */
-    public function addFieldObject(FieldInterface $field)
-    {
-        $this->fields[$field->getName()] = $field;
-        return $this;
-    }
-
-    /**
-     * @param  array $fields
-     * @return $this
-     */
-    public function addFields(array $fields = [])
-    {
-        foreach ($fields as $field) {
-            $aliasName = isset($field['alias_name']) ? $field['alias_name'] : null;
-            $args = isset($field['args']) ? $field['args'] : [];
-            $this->addNewField($field['name'], $args, $aliasName);
-        }
-        return $this;
-    }
-
-    /**
-     * @param  array $fields
-     * @return $this
-     */
-    public function setFields(array $fields)
-    {
-        foreach ($fields as $field) {
-            $this->addFieldObject($field);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getFields()
@@ -284,101 +225,47 @@ class QueryBuilder extends AbstractQuery
     }
 
     /**
-     * @param  string $fragmentName
-     * @param  string $typeName
-     * @param  array $fields
-     * @return Fragment
+     * @param  string $fieldName
+     * @param  array $fragmentData
+     * @param  string|null $parentFieldName
+     * @return $this
      */
-    public function createFragment($fragmentName, $typeName, array $fields)
+    public function addInlineFragmentToField($fieldName, array $fragmentData, $parentFieldName = null)
     {
-        $fragment = new Fragment($fragmentName);
-        $fragment->setTypeName($typeName)
-            ->setFields($fields);
-
-        return $fragment;
-    }
-
-    /**
-     * @param  string $typeName
-     * @param  array $fields
-     * @return Fragment
-     */
-    public function createInlineFragment($typeName, array $fields)
-    {
-        return $this->createFragment(null, $typeName, $fields);
+        $normalisedData = Normaliser::normaliseFragmentData($fragmentData);
+        $inlineFragment = ObjectFactory::createInlineFragment($normalisedData['type'], $normalisedData['fields']);
+        /** @var Field $field */
+        $field = $this->getField($fieldName, $parentFieldName)->setInlineFragment($inlineFragment);
+        $this->inlineFragments[$field->getName()] = $inlineFragment;
+        return $this;
     }
 
     /**
      * @param  string $fieldName
      * @param  array $fragmentData
+     * @param  string|null $parentFieldName
      * @return $this
      */
-    public function addInlineFragmentToField($fieldName, array $fragmentData)
+    public function addFragment($fieldName, array $fragmentData, $parentFieldName = null)
     {
-        $normalised = Normaliser::normalise($fragmentData);
-        $inlineFragment = new Inline();
-        $inlineFragment->setTypeName($normalised['type']);
-        $inlineFragment->setFields($normalised['fields']);
-        $this->getField($fieldName)->setInlineFragment($inlineFragment);
-        return $this;
-    }
-
-    /**
-     * @param  array $fragmentData
-     * @return $this
-     */
-    public function addFragment(array $fragmentData)
-    {
-        $normalisedData = Normaliser::normalise($fragmentData);
-
-        return $this->addFragmentObject(
-            $fragmentData['field'],
-            $this->createFragment($normalisedData['name'], $normalisedData['type'], $normalisedData['fields'])
+        $normalisedData = Normaliser::normaliseFragmentData($fragmentData);
+        $fragment = ObjectFactory::createFragment(
+            $normalisedData['name'],
+            $normalisedData['type'],
+            $normalisedData['fields']
         );
-    }
-
-    /**
-     * @param  array $fragments
-     * @return $this
-     */
-    public function addFragments(array $fragments)
-    {
-        foreach ($fragments as $fragment) {
-            $this->addFragment($fragment);
-        }
-
+        $field = $this->getField($fieldName, $parentFieldName)->setFragment($fragment);
+        $this->fragments[$field->getName()] = $fragment;
         return $this;
     }
 
     /**
      * @param  string $fieldName
-     * @param  Fragment $fragment
+     * @param  FragmentInterface $fragment
      * @return $this
      * @throws QueryException
      */
-    public function addFragmentObject($fieldName, Fragment $fragment)
-    {
-        if ($this->hasFragment($fieldName, $fragment)) {
-            $msg = sprintf(
-                'Fragment %s already associated with field %s',
-                $fragment->getName(),
-                $fieldName
-            );
-            throw new QueryException($msg);
-        }
-
-        $this->fragments[$fieldName] = $fragment;
-        $this->getField($fieldName)->setFragment($fragment);
-        return $this;
-    }
-
-    /**
-     * @param  string $fieldName
-     * @param  Fragment $fragment
-     * @return $this
-     * @throws QueryException
-     */
-    public function removeFragment($fieldName, Fragment $fragment)
+    public function removeFragment($fieldName, FragmentInterface $fragment)
     {
         if (!$this->hasFragment($fieldName, $fragment)) {
             $msg = sprintf(
@@ -394,10 +281,10 @@ class QueryBuilder extends AbstractQuery
 
     /**
      * @param  string $fieldName
-     * @param  Fragment $fragment
+     * @param  FragmentInterface $fragment
      * @return bool
      */
-    public function hasFragment($fieldName, Fragment $fragment)
+    public function hasFragment($fieldName, FragmentInterface $fragment)
     {
         return isset($this->fragments[$fieldName]) &&
             $this->fragments[$fieldName]->getName() === $fragment->getName();
@@ -416,7 +303,7 @@ class QueryBuilder extends AbstractQuery
      */
     public function getFragmentsCount()
     {
-        return count($this->fragments);
+        return count($this->getFragments());
     }
 
     /**
@@ -427,6 +314,9 @@ class QueryBuilder extends AbstractQuery
         return $this->fragments;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $fragmentStr = '';
@@ -436,7 +326,7 @@ class QueryBuilder extends AbstractQuery
 
         return sprintf(
             '%s %s %s { %s } %s',
-            $this->getQueryKeyWord(),
+            $this->getKeyWord(),
             $this->getName(),
             $this->variables->getVariablesConstruct(),
             implode(', ', $this->getFields()),

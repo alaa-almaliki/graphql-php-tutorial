@@ -32,14 +32,16 @@ class Variables
      * @param  string $varName
      * @param  string $varType
      * @param  string $varValue
+     * @param  string $defaultValue
      * @return $this
      */
-    public function addVariable($varName, $varType, $varValue)
+    public function addVariable($varName, $varType, $varValue, $defaultValue = null)
     {
         if (!$this->hasVariable($varName)) {
             $this->variables[$varName] = [
-                'type' => $varType,
-                'value' => $varValue
+                'type'          => $varType,
+                'value'         => $varValue,
+                'default_value' => $defaultValue
             ];
         }
 
@@ -94,9 +96,13 @@ class Variables
             return $params;
         }
 
-
         foreach ($this->getVariables() as $varName => $var) {
-            $params[] = sprintf('$%s : %s', $varName, $var['type']);
+            $param = sprintf('$%s : %s', $varName, $var['type']);
+            if (isset($var['default_value'])) {
+                $param .= ' = ' . $var['default_value'];
+            }
+
+            $params[] = $param;
         }
 
         return $params;

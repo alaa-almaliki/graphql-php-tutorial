@@ -3,8 +3,6 @@ use GraphQL\Client\Query\Field;
 $client = include_once '../client.php';
 
 $url = 'http://development.local/graphql/examples/004/graphql.php';
-#$query = '{"query":"query person { first_name, last_name, occupation, years, salary, is_php } "}';
-
 $parser = new \GraphQL\Client\Query\Parser();
 $queryBuilder = $parser->createQueryBuilder('person');
 

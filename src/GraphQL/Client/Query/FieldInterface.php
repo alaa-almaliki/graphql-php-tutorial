@@ -27,7 +27,7 @@ interface FieldInterface extends QueryInterface
      * @param  array $arguments
      * @return mixed
      */
-    public function setArguments(array $arguments = []);
+    public function setArguments(array $arguments);
 
     /**
      * @return mixed
@@ -111,7 +111,7 @@ interface FieldInterface extends QueryInterface
      * @param  Fragment $fragment
      * @return mixed
      */
-    public function setFragment(Fragment $fragment);
+    public function setFragment(Fragment $fragment = null);
 
     /**
      * @return Fragment
@@ -127,7 +127,7 @@ interface FieldInterface extends QueryInterface
      * @param Inline $inlineFragment
      * @return mixed
      */
-    public function setInlineFragment(Inline $inlineFragment);
+    public function setInlineFragment(Inline $inlineFragment = null);
 
     /**
      * @return Inline
@@ -149,7 +149,7 @@ interface FieldInterface extends QueryInterface
      * @param Directive $directive
      * @return mixed
      */
-    public function setDirectiveObject(Directive $directive);
+    public function setDirective(Directive $directive);
 
     /**
      * @return mixed
@@ -157,14 +157,13 @@ interface FieldInterface extends QueryInterface
     public function getDirective();
 
     /**
-     * @param  string $directive
-     * @param  string $operation
-     * @return mixed
-     */
-    public function setDirective($directive, $operation);
-
-    /**
      * @return bool
      */
     public function hasDirective();
+
+    /**
+     * @param  array $fields
+     * @return mixed
+     */
+    public function addFields(array $fields);
 }
