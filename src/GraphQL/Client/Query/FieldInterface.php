@@ -2,6 +2,7 @@
 namespace GraphQL\Client\Query;
 
 use GraphQL\Client\Query\Field\ArgumentInterface;
+use GraphQL\Client\Query\Field\Directive;
 use GraphQL\Client\Query\Fragment\Inline;
 
 /**
@@ -134,7 +135,36 @@ interface FieldInterface extends QueryInterface
     public function getInlineFragment();
 
     /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasArgument($name);
+
+    /**
      * @return bool
      */
     public function hasInlineFragment();
+
+    /**
+     * @param Directive $directive
+     * @return mixed
+     */
+    public function setDirectiveObject(Directive $directive);
+
+    /**
+     * @return mixed
+     */
+    public function getDirective();
+
+    /**
+     * @param  string $directive
+     * @param  string $operation
+     * @return mixed
+     */
+    public function setDirective($directive, $operation);
+
+    /**
+     * @return bool
+     */
+    public function hasDirective();
 }

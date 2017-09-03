@@ -3,6 +3,7 @@ namespace GraphQL\Client\Query;
 
 use GraphQL\Client\Query\Field\Argument;
 use GraphQL\Client\Query\Field\ArgumentInterface;
+use GraphQL\Client\Query\Field\Directive;
 use GraphQL\Client\Query\Fragment\Inline;
 
 /**
@@ -22,6 +23,8 @@ class Field extends AbstractQuery implements FieldInterface
     private $fragment;
     /** @var  Inline */
     private $inlineFragment;
+    /** @var  Directive */
+    private $directive;
 
     /**
      * Field constructor.
@@ -138,6 +141,43 @@ class Field extends AbstractQuery implements FieldInterface
     public function getArgumentsCount()
     {
         return count($this->getArguments());
+    }
+
+    /**
+     * @param  Directive $directive
+     * @return $this
+     */
+    public function setDirectiveObject(Directive $directive)
+    {
+        $this->directive = $directive;
+        return $this;
+    }
+
+    /**
+     * @return Directive
+     */
+    public function getDirective()
+    {
+        return $this->directive;
+    }
+
+    /**
+     * @param  string $directive
+     * @param  string $operation
+     * @return $this
+     */
+    public function setDirective($directive, $operation)
+    {
+        $this->setDirectiveObject(new Directive($directive, $operation));
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDirective()
+    {
+        return $this->directive !== null;
     }
 
     /**
@@ -278,6 +318,11 @@ class Field extends AbstractQuery implements FieldInterface
         if ($this->hasArguments()) {
             $str .= '( %s )';
         }
+
+        if ($this->hasDirective()) {
+            $str .= ' ' . (string) $this->directive;
+        }
+
         return sprintf($str, implode(', ', $this->getArguments()));
     }
 
