@@ -124,6 +124,47 @@ class QueryBuilder extends AbstractQuery
 
     /**
      * @param  array $fieldData
+     *        $fieldData = [
+     *        'name' => '' , //field name
+     *        'alias_name' => '', // field alias name
+     *        'arguments' => [ // field arguments - array of arrays
+     *            [
+     *                'name' => '', // argument name
+     *                'value' => '', // argument value
+     *            ]
+     *        ],
+     *        'fragment' => [ // field fragment  - array
+     *           'name' => '', // fragment name
+     *           'type' => '', // Query type defined in the api,
+     *            'fields' => [ // fields included in the fragment
+     *                'field1',
+     *                'field2',
+     *                'field3',
+     *                '...'
+     *            ]
+     *        ],
+     *        'inline_fragment' => [ // field inline fragment - inline fragment has no name
+     *            'type' => '', // Query type defined in the api,
+     *            'fields' => [ // fields included in the fragment
+     *                'field1',
+     *                'field2',
+     *                'field3',
+     *                '...'
+     *            ]
+     *        ],
+     *        'directive' => [ // field directive
+     *            'directive' => '', // could be include or skip
+     *            'operation' => '', // starts with $ sign, this is the argument passed into here
+     *        ],
+     *        'fields' => [ // array of array, repeat field definition mentioned above
+     *            [
+     *                'name',
+     *                '.....',
+     *                'fields' => [],
+     *            ]
+     *        ]
+     *    ];
+     *
      * @param  string|null $parentFieldName
      * @return $this
      */

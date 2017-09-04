@@ -8,6 +8,7 @@ require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/ArgumentInterface.php
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/Argument.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/FieldInterface.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Field.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/Field/Directive.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/FragmentInterface.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/AbstractFragment.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Fragment.php';
