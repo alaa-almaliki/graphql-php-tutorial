@@ -11,6 +11,12 @@ class Connection
         $this->pdo = $pdo;
     }
 
+    public function getAll()
+    {
+        $statement = $this->pdo->query('select * from ' . $this->getTable());
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function get($field, $value)
     {
         $statement = $this->pdo->query('select * from ' . $this->getTable() . ' where ' . $field . ' = ' . $value);

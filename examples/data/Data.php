@@ -24,6 +24,32 @@ abstract class Data
     public function getByField($fieldName, $value)
     {
         $this->data = $this->resource->getConnection()->get($fieldName, $value);
+        $this->assignVars();
+        return $this;
+    }
+
+    public function getAll()
+    {
+        $data = $this->resource->getConnection()->getAll();
+        $customers = [];
+        foreach ($data as $datum) {
+            $customer = new static();
+            $customer->assignLoadedData($datum);
+            $customer->assignVars();
+            $customers[] = $customer;
+        }
+        return $customers;
+    }
+
+    private function assignLoadedData(array $data)
+    {
+        $this->data = $data;
+        $this->assignVars();
+        return $this;
+    }
+
+    private function assignVars()
+    {
         foreach ($this->data as $key => $val) {
             $parts = array_map(function ($word) {
                 return ucfirst($word);
@@ -32,6 +58,10 @@ abstract class Data
             $var = lcfirst(implode($parts));
             $this->$var = $val;
         }
-        return $this;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 }
