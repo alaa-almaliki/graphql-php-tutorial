@@ -25,6 +25,7 @@ abstract class Data
     {
         $this->data = $this->resource->getConnection()->get($fieldName, $value);
         $this->assignVars();
+        $this->setIdField();
         return $this;
     }
 
@@ -63,5 +64,14 @@ abstract class Data
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setIdField()
+    {
+        // implement to assign the auto increment field to the $this->id field if it is a different name
+        return $this;
     }
 }

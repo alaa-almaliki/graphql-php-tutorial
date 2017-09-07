@@ -80,7 +80,7 @@ class Field extends AbstractQuery implements FieldInterface
     public function setArguments(array $arguments)
     {
         foreach ($arguments as $argument) {
-            $this->addArgumentObject($argument);
+            $this->addArgumentObject(new Argument($argument['name'], $argument['value']));
         }
         return $this;
     }
@@ -191,8 +191,10 @@ class Field extends AbstractQuery implements FieldInterface
      */
     public function addFields(array $fields)
     {
-        /** @var Field $field */
-        foreach ($fields as $field) {
+        /** @var array $field */
+        foreach ($fields as $fieldData) {
+            $field = new static();
+            \PropertySetterConfig::setObjectProperties($field, $fieldData);
             $this->addField($field);
         }
 

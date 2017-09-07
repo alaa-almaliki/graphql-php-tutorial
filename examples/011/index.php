@@ -12,18 +12,36 @@ $queryBuilder->addNewField([
    'name' => 'customer',
     'arguments' => [
         [
-            'name' => 'customerNumber',
+            'name' => 'id',
             'value' => 103,
         ]
     ],
+    'fields' => [
+        ['name' => 'id'],
+        ['name' => 'customerNumber', 'alias_name' => 'customer_number'],
+        ['name' => 'customerName', 'alias_name' => 'customer_name'],
+        ['name' => 'contactLastName', 'alias_name' => 'contact_last_name'],
+        ['name' => 'contactFirstName', 'alias_name' => 'contact_first_name'],
+        ['name' => 'phone'],
+        ['name' => 'addressLine1', 'alias_name' => 'address_line_1'],
+        ['name' => 'addressLine2', 'alias_name' => 'address_line_2'],
+        ['name' => 'city'],
+        ['name' => 'state'],
+        ['name' => 'postalCode', 'alias_name' => 'post_code'],
+        ['name' => 'country'],
+        ['name' => 'salesRepEmployeeNumber', 'alias_name' => 'sales_rep_employee_number'],
+        ['name' => 'creditLimit', 'alias_name' => 'credit_limit'],
+    ]
 ]);
 
-$queryBuilder->getField('customer')->addField(new \GraphQL\Client\Query\Field('customerNumber'));
 
 $query = $parser->parse(true);
-
 $result = $client['send']($url, $query, true);
 
 echo '<pre>';
 
-print_r($result);
+#var_dump($result);
+foreach ($result as $customerData) {
+    print_r($customerData);
+    echo '<br />';
+}

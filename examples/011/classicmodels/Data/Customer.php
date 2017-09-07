@@ -28,4 +28,10 @@ class Customer extends Data
    {
        return $this->getByField('customerNumber', $id);
    }
+
+   protected function setIdField()
+   {
+       $this->id = $this->customerNumber;
+       return $this;
+   }
 }

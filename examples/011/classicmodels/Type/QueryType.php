@@ -14,7 +14,7 @@ class QueryType extends ObjectType
                     'type' => Types::customer(),
                     'description' => 'Returns user by id (in range of 1-5)',
                     'args' => [
-                        'customerNumber' => Type::nonNull(Type::int())
+                        'id' => Type::nonNull(Type::int())
                     ]
                 ],
             ],
@@ -28,6 +28,6 @@ class QueryType extends ObjectType
 
     public function customer($root, $args)
     {
-        return (new Customer())->getById($args['customerNumber']);
+        return (new Customer())->getById($args['id']);
     }
 }

@@ -85,7 +85,6 @@ class ObjectFactory
         array $fields = []
     )
     {
-        $argument           = static::getArguments($argumentData);
         $fragment           = static::getFragment($fragmentData);
         $inlineFragment     = static::getInlineFragment($inlineFragmentData);
         $directiveObject    = static::getDirective($directiveData);
@@ -93,30 +92,12 @@ class ObjectFactory
         return new Field(
             $name,
             $aliasName,
-            $argument,
+            $argumentData,
             $fragment,
             $inlineFragment,
             $directiveObject,
             $fields
         );
-    }
-
-    /**
-     * @param  array $argumentData
-     * @return array
-     */
-    static private function getArguments(array $argumentData)
-    {
-        $arguments = [];
-        if (!empty($argumentData)) {
-            foreach ($argumentData as $data) {
-                $argName        = $data['name'];
-                $argValue       = $data['value'];
-                $argument       = static::createArgument($argName, $argValue);
-                $arguments[]    = $argument;
-            }
-        }
-        return $arguments;
     }
 
     /**

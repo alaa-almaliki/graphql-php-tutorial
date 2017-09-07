@@ -11,8 +11,22 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
             'description' => 'Customer',
             'fields' => function() {
                 return [
-                    'customerNumber'=>  Type::int(),
-
+                    'id' => [
+                        'type' =>               Type::id(),
+                    ],
+                    'customerNumber'            => Type::int(), // replaced with id in the api
+                    'customerName'              => Type::string(),
+                    'contactLastName'           => Type::string(),
+                    'contactFirstName'          => Type::string(),
+                    'phone'                     => Type::string(),
+                    'addressLine1'              => Type::string(),
+                    'addressLine2'              => Type::string(),
+                    'city'                      => Type::string(),
+                    'state'                     => Type::string(),
+                    'postalCode'                => Type::string(),
+                    'country'                   => Type::string(),
+                    'salesRepEmployeeNumber'    => Type::string(),
+                    'creditLimit'               => Type::int(),
 
                 ];
             },
