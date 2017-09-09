@@ -19,7 +19,8 @@ class Connection
 
     public function get($field, $value)
     {
-        $statement = $this->pdo->query('select * from ' . $this->getTable() . ' where ' . $field . ' = ' . $value);
+        $query = 'select * from ' . $this->getTable() . ' where ' . $field . ' = ' . $value;
+        $statement = $this->pdo->query($query);
         return $statement->fetch(PDO::FETCH_ASSOC);
     }
 

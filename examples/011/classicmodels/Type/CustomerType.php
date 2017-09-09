@@ -14,7 +14,7 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
                     'id' => [
                         'type' =>               Type::id(),
                     ],
-                    'customerNumber'            => Type::int(), // replaced with id in the api
+                    'customerNumber'            => Type::int(), // copied to the  id field in the api
                     'customerName'              => Type::string(),
                     'contactLastName'           => Type::string(),
                     'contactFirstName'          => Type::string(),

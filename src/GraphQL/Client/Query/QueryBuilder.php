@@ -202,7 +202,6 @@ class QueryBuilder extends AbstractQuery
     public function addFields(array $data)
     {
         foreach ($data as $fieldData) {
-
             $this->addNewField($fieldData);
         }
 

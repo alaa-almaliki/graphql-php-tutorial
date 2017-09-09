@@ -12,11 +12,18 @@ class QueryType extends ObjectType
             'fields' => [
                 'customer' => [
                     'type' => Types::customer(),
-                    'description' => 'Returns user by id (in range of 1-5)',
+                    'description' => 'Returns customer',
                     'args' => [
                         'id' => Type::nonNull(Type::int())
                     ]
                 ],
+                'employee' => [
+                    'type' => Types::employee(),
+                    'description' => 'Returns customer',
+                    'args' => [
+                        'id' => Type::nonNull(Type::int())
+                    ]
+                ]
             ],
             'resolveField' => function($val, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
                 return $this->{$info->fieldName}($val, $args, $context, $info);
@@ -30,4 +37,10 @@ class QueryType extends ObjectType
     {
         return (new Customer())->getById($args['id']);
     }
+
+    public function employee($root, $args)
+    {
+        return (new Employee())->getById($args['id']);
+    }
+
 }
