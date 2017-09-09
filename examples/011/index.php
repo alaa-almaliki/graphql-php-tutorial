@@ -4,6 +4,7 @@ require_once  './includes.php';
 $client = include_once '../client.php';
 
 $url = 'http://development.local/graphql/examples/011/graphql.php';
+var_dump(\GraphQL\Custom\Scalar\Types\Validation\Email::isValid('dmurphy@classicmodelcars.com'));
 
 $parser = new \GraphQL\Client\Query\Parser();
 $queryBuilder = $parser->createQueryBuilder('graqhql');

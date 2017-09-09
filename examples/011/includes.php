@@ -1,5 +1,10 @@
 <?php
 require_once './../../vendor/autoload.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/Validation/Email.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/ValidatorInterface.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/AbstractType.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/EmailType.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/Registry.php';
 
 require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'data/Connection.php';
 require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'data/Resource.php';

@@ -18,7 +18,7 @@ class EmployeeType extends ObjectType
                     'lastName'              => Type::string(),
                     'firstName'           => Type::string(),
                     'extension'          => Type::string(),
-                    'email'                     => Type::string(),
+                    'email'                     => Types::email(),
                     'officeCode'              => Type::string(),
                     'reportsTo'              => Type::string(),
                     'jobTitle'                      => Type::string(),
