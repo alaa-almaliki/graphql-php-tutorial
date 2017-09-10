@@ -1,8 +1,7 @@
 {
     "require": {
-        "webonyx/graphql-php": "^0.10.1",
+        "webonyx/graphql-php": "0.10.*",
         "alaa-almaliki/property-setter-config": "^0.1.1",
-        "symfony/validator": "3.3",
-        "egulias/email-validator": "^1.2.8|~2.0"
+        "nojacko/email-validator": "^1.1"
     }
 }

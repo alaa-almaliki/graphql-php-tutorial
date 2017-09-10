@@ -24,7 +24,6 @@ class Employee extends Data
     protected function setIdField()
     {
         $this->id = $this->employeeNumber;
-        //$this->email = 'alaa.almaliki@gmail.com';
         return $this;
     }
 }

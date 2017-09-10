@@ -1,9 +1,14 @@
 <?php
 require_once './../../vendor/autoload.php';
-require_once './../../src/GraphQL/Custom/Scalar/Types/Validation/Email.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/AbstractEmail.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/BasicEmail.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/StrictEmail.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/Email.php';
+
 require_once './../../src/GraphQL/Custom/Scalar/Types/ValidatorInterface.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/AbstractType.php';
-require_once './../../src/GraphQL/Custom/Scalar/Types/EmailType.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/BasicEmailType.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/StrictEmailType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/Registry.php';
 
 require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'data/Connection.php';

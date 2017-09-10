@@ -31,6 +31,6 @@ class Types
 
     static public function email()
     {
-        return Registry::emailType();
+        return Registry::basicEmailType();
     }
 }
