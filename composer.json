@@ -2,6 +2,6 @@
     "require": {
         "webonyx/graphql-php": "0.10.*",
         "alaa-almaliki/property-setter-config": "^0.1.1",
-        "nojacko/email-validator": "^1.1"
+        "nojacko/email-validator": "1.1.2"
     }
 }
