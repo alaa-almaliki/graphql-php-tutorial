@@ -5,7 +5,7 @@ require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/BasicEmail.php'
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/StrictEmail.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email.php';
 
-require_once './../../src/GraphQL/Custom/Scalar/Types/ValidatorInterface.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/TypeValidationInterface.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/AbstractType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/BasicEmailType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/StrictEmailType.php';
