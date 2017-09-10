@@ -18,7 +18,7 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
                     'customerName'              => Type::string(),
                     'contactLastName'           => Type::string(),
                     'contactFirstName'          => Type::string(),
-                    'phone'                     => Type::string(),
+                    'phone'                     => Types::phoneNumber(),//Type::string(),
                     'addressLine1'              => Type::string(),
                     'addressLine2'              => Type::string(),
                     'city'                      => Type::string(),

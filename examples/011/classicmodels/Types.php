@@ -1,7 +1,7 @@
 <?php
 
 use GraphQL\Custom\Scalar\Types\Registry;
-
+use GraphQL\Type\Definition\Type;
 class Types
 {
     private static $queryType;
@@ -32,5 +32,10 @@ class Types
     static public function email()
     {
         return Registry::basicEmailType();
+    }
+
+    static public function phoneNumber()
+    {
+        return Registry::phoneNumberType('GB');
     }
 }
