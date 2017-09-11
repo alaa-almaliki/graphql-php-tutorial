@@ -33,6 +33,7 @@ $queryBuilder->addFields(
                 ['name' => 'country'],
                 ['name' => 'salesRepEmployeeNumber', 'alias_name' => 'sales_rep_employee_number'],
                 ['name' => 'creditLimit', 'alias_name' => 'credit_limit'],
+                ['name' => 'phoneRegion', 'alias_name' => 'phone_region'],
             ]
         ],
         [

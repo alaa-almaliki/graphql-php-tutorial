@@ -3,9 +3,11 @@ require_once './../../vendor/autoload.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/AbstractEmail.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/BasicEmail.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email/StrictEmail.php';
-require_once './../../src/GraphQL/Custom/Scalar/Validation/AbstarctValidator.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/AbstractValidator.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/Traits/PhoneNumberTrait.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/Email.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation/PhoneNumber.php';
+require_once './../../src/GraphQL/Custom/Scalar/Validation/PhoneRegion.php';
 require_once './../../src/GraphQL/Custom/Scalar/Validation.php';
 
 require_once './../../src/GraphQL/Custom/Scalar/Types/TypeValidationInterface.php';
@@ -15,6 +17,7 @@ require_once './../../src/GraphQL/Custom/Scalar/Types/AbstractType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/BasicEmailType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/StrictEmailType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/PhoneNumberType.php';
+require_once './../../src/GraphQL/Custom/Scalar/Types/PhoneRegionType.php';
 require_once './../../src/GraphQL/Custom/Scalar/Types/Registry.php';
 
 require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'data/Connection.php';

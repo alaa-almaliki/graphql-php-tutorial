@@ -18,6 +18,7 @@ class Customer extends Data
     public $country;
     public $salesRepEmployeeNumber;
     public $creditLimit;
+    public $phoneRegion;
 
     public function getTable()
     {
@@ -32,6 +33,8 @@ class Customer extends Data
    protected function setIdField()
    {
        $this->id = $this->customerNumber;
+       //$this->phone = '44??????????';
+       //$this->phoneRegion = '??';
        return $this;
    }
 }

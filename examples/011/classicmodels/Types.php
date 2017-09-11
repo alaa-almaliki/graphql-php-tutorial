@@ -38,4 +38,9 @@ class Types
     {
         return Registry::phoneNumberType('GB');
     }
+
+    static public function phoneRegion()
+    {
+        return Registry::phoneRegionType();
+    }
 }
