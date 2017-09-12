@@ -18,7 +18,7 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
                     'customerName'              => Type::string(),
                     'contactLastName'           => Type::string(),
                     'contactFirstName'          => Type::string(),
-                    'phone'                     => Types::phoneNumber(),//Type::string(),
+                    'phone'                     => Types::string(),
                     'addressLine1'              => Type::string(),
                     'addressLine2'              => Type::string(),
                     'city'                      => Type::string(),
@@ -27,7 +27,6 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
                     'country'                   => Type::string(),
                     'salesRepEmployeeNumber'    => Type::string(),
                     'creditLimit'               => Type::int(),
-                    'phoneRegion'                    => Types::phoneRegion(),
 
                 ];
             },

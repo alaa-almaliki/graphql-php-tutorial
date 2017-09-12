@@ -33,7 +33,6 @@ $queryBuilder->addFields(
                 ['name' => 'country'],
                 ['name' => 'salesRepEmployeeNumber', 'alias_name' => 'sales_rep_employee_number'],
                 ['name' => 'creditLimit', 'alias_name' => 'credit_limit'],
-                ['name' => 'phoneRegion', 'alias_name' => 'phone_region'],
             ]
         ],
         [
@@ -54,6 +53,20 @@ $queryBuilder->addFields(
                 ['name' => 'officeCode', 'alias_name' => 'office_code'],
                 ['name' => 'reportsTo', 'alias_name' => 'report_to'],
                 ['name' => 'jobTitle',  'alias_name' => 'job_title'],
+                [
+                    'name' => 'office',
+                    'fields' => [
+                        ['name' => 'officeCode'],
+                        ['name' => 'city'],
+                        ['name' => 'phone'],
+                        ['name' => 'addressLine1'],
+                        ['name' => 'addressLine2'],
+                        ['name' => 'state'],
+                        ['name' => 'country'],
+                        ['name' => 'postalCode'],
+                        ['name' => 'territory'],
+                    ]
+                ]
             ],
         ],
     ]

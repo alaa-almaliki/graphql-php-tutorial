@@ -8,6 +8,7 @@ class Types
     private static $customerType;
     private static $employeeType;
     private static $nodeType;
+    private static $office;
 
     static public function customer()
     {
@@ -29,6 +30,11 @@ class Types
         return self::$queryType ? : (self::$queryType = new QueryType());
     }
 
+    static public function office()
+    {
+        return self::$office ?: (self::$office = new OfficeType());
+    }
+
     static public function email()
     {
         return Registry::basicEmailType();
@@ -39,8 +45,8 @@ class Types
         return Registry::phoneNumberType('GB');
     }
 
-    static public function phoneRegion()
+    static public function string()
     {
-        return Registry::phoneRegionType();
+        return Type::string();
     }
 }
