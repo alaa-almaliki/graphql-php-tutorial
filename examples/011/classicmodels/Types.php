@@ -9,6 +9,7 @@ class Types
     private static $employeeType;
     private static $nodeType;
     private static $office;
+    private static $orderType;
 
     static public function customer()
     {
@@ -33,6 +34,11 @@ class Types
     static public function office()
     {
         return self::$office ?: (self::$office = new OfficeType());
+    }
+
+    static public function order()
+    {
+        return self::$orderType?: (self::$orderType = new OrderType());
     }
 
     static public function email()

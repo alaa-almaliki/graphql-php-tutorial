@@ -23,6 +23,12 @@ class QueryType extends ObjectType
                     'args' => [
                         'id' => Type::nonNull(Type::int())
                     ]
+                ],
+                'order' => [
+                    'type' => Types::order(),
+                    'args' => [
+                        'id' => Type::nonNull(Type::int())
+                    ]
                 ]
             ],
             'resolveField' => function($val, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
@@ -41,6 +47,11 @@ class QueryType extends ObjectType
     public function employee($root, $args)
     {
         return (new Employee())->getById($args['id']);
+    }
+
+    public function order($root, $args)
+    {
+        return (new Order())->getById($args['id']);
     }
 
 }
