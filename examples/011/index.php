@@ -127,6 +127,21 @@ $queryBuilder->addFields(
                     ]
                 ]
             ]
+        ],
+        [
+            'name' => 'productLine',
+            'arguments' => [
+                [
+                    'name' => 'productLine',
+                    'value' => 'Trains'
+                ]
+            ],
+            'fields' => [
+                ['name' => 'productLine'],
+                ['name' => 'textDescription'],
+                ['name' => 'htmlDescription'],
+                ['name' => 'image'],
+            ]
         ]
     ]
 );
@@ -141,7 +156,7 @@ $result = $client['send']($url, $query, true);
 
 echo '<pre>';
 
-print_r($result);
+//print_r($result);
 foreach ($result as $customerData) {
     print_r($customerData);
     echo '<br />';

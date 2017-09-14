@@ -19,6 +19,9 @@ class Connection
 
     public function get($field, $value)
     {
+        if (is_string($value)) {
+            $value = $this->pdo->quote($value);
+        }
         $query = 'select * from ' . $this->getTable() . ' where ' . $field . ' = ' . $value;
         $statement = $this->pdo->query($query);
         return $statement->fetch(PDO::FETCH_ASSOC);
@@ -26,7 +29,7 @@ class Connection
 
     public function __destruct()
     {
-        $this->pdo = null;
+        //$this->pdo = null;
     }
 
     public function setTable($table)

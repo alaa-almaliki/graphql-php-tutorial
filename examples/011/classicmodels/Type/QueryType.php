@@ -1,4 +1,5 @@
 <?php
+
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -29,9 +30,15 @@ class QueryType extends ObjectType
                     'args' => [
                         'id' => Type::nonNull(Type::int())
                     ]
+                ],
+                'productLine' => [
+                    'type' => Types::productLine(),
+                    'args' => [
+                        'productLine' => Type::string()
+                    ]
                 ]
             ],
-            'resolveField' => function($val, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
+            'resolveField' => function ($val, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
                 return $this->{$info->fieldName}($val, $args, $context, $info);
             }
 
@@ -52,6 +59,11 @@ class QueryType extends ObjectType
     public function order($root, $args)
     {
         return (new Order())->getById($args['id']);
+    }
+
+    public function productLine($root, $args)
+    {
+        return (new ProductLine())->getByProductLine($args['productLine']);
     }
 
 }

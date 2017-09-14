@@ -12,6 +12,7 @@ class Types
     private static $orderType;
     private static $orderDetailsType;
     private static $payment;
+    private static $productLine;
 
     static public function customer()
     {
@@ -46,6 +47,11 @@ class Types
     static public function payment()
     {
         return self::$payment?: (self::$payment = new PaymentType());
+    }
+
+    static public function productLine()
+    {
+        return self::$productLine?: (self::$productLine = new ProductLineType());
     }
 
     static public function email()
