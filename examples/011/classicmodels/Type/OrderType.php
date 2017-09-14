@@ -11,7 +11,7 @@ class OrderType extends ObjectType
             'name' => 'Order',
             'description' => 'Order',
             'fields' => function () {
-                    return [
+                return [
                     'id' => Type::int(),
                     'orderNumber' => Type::int(),
                     'orderDate' => Type::string(),
@@ -25,10 +25,16 @@ class OrderType extends ObjectType
                         'args' => [
                             'customerNumber' => Type::int(),
                         ]
+                    ],
+                    'orderDetails' => [
+                        'type' => Types::orderDetails(),
+                        'args' => [
+                            'orderNumber' => Type::int(),
+                        ]
                     ]
                 ];
             },
-            'resolveField' => function($value, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
+            'resolveField' => function ($value, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
                 $method = 'resolve' . ucfirst($info->fieldName);
                 if (method_exists($this, $method)) {
                     return $this->{$method}($value, $args, $context, $info);
@@ -45,5 +51,10 @@ class OrderType extends ObjectType
     public function resolveCustomer(Order $order)
     {
         return (new Customer())->getById($order->customerNumber);
+    }
+
+    public function resolveOrderDetails(Order $order)
+    {
+        return (new OrderDetails())->getById($order->orderNumber);
     }
 }

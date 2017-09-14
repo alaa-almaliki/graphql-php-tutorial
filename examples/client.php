@@ -17,6 +17,7 @@ require_once __DIR__ . '/../src/GraphQL/Client/Query/Utils/Data/Normaliser.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Variables.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/QueryBuilder.php';
 require_once __DIR__ . '/../src/GraphQL/Client/Query/Parser.php';
+require_once __DIR__ . '/../src/GraphQL/Client/Query/QueryException.php';
 
 return [
     'send' => function ($url, $query, $toArray = false) {

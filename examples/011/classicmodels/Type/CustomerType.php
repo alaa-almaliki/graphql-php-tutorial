@@ -27,10 +27,26 @@ class CustomerType extends \GraphQL\Type\Definition\ObjectType
                     'country'                   => Type::string(),
                     'salesRepEmployeeNumber'    => Type::string(),
                     'creditLimit'               => Type::int(),
+                    'payment'                   => [
+                        'type' => Types::payment()
+                    ]
 
                 ];
             },
+            'resolveField' => function($value, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
+                $method = 'resolve' . ucfirst($info->fieldName);
+                if (method_exists($this, $method)) {
+                    return $this->{$method}($value, $args, $context, $info);
+                } else {
+                    return $value->{$info->fieldName};
+                }
+            }
         ];
         parent::__construct($config);
+    }
+
+    public function resolvePayment(Customer $customer)
+    {
+        return (new Payment())->getByCustomer($customer->customerNumber);
     }
 }

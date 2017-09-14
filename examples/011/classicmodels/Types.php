@@ -10,6 +10,8 @@ class Types
     private static $nodeType;
     private static $office;
     private static $orderType;
+    private static $orderDetailsType;
+    private static $payment;
 
     static public function customer()
     {
@@ -41,6 +43,11 @@ class Types
         return self::$orderType?: (self::$orderType = new OrderType());
     }
 
+    static public function payment()
+    {
+        return self::$payment?: (self::$payment = new PaymentType());
+    }
+
     static public function email()
     {
         return Registry::basicEmailType();
@@ -51,8 +58,28 @@ class Types
         return Registry::phoneNumberType('GB');
     }
 
+    static public function orderDetails()
+    {
+        return self::$orderDetailsType?: (self::$orderDetailsType = new OrderDetailsType());
+    }
+
     static public function string()
     {
         return Type::string();
+    }
+
+    static public function int()
+    {
+        return Type::int();
+    }
+
+    static public function float()
+    {
+        return Type::float();
+    }
+
+    static public function id()
+    {
+        return Type::id();
     }
 }
