@@ -29,6 +29,27 @@ abstract class Data
         return $this;
     }
 
+    public function list($fieldName, $value)
+    {
+        $data = $this->resource->getConnection()->list($fieldName, $value);
+        $list = [];
+        foreach ($data as $row) {
+            $self = new static();
+            $self->setData($row);
+            $self->assignVars();
+            $self->setIdField();
+            $list[] = $self;
+        }
+
+        return $list;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+        return $this;
+    }
+
     public function getAll()
     {
         $data = $this->resource->getConnection()->getAll();

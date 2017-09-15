@@ -31,13 +31,17 @@ require_once __DIR__ . '/classicmodels/Data/Office.php';
 require_once __DIR__ . '/classicmodels/Data/Order.php';
 require_once __DIR__ . '/classicmodels/Data/OrderDetails.php';
 require_once __DIR__ . '/classicmodels/Data/Payment.php';
+require_once __DIR__ . '/classicmodels/Data/Product.php';
 require_once __DIR__ . '/classicmodels/Data/ProductLine.php';
+require_once __DIR__ . '/classicmodels/Data/User.php';
 require_once __DIR__ . '/classicmodels/Type/CustomerType.php';
 require_once __DIR__ . '/classicmodels/Type/OfficeType.php';
 require_once __DIR__ . '/classicmodels/Type/OrderType.php';
 require_once __DIR__ . '/classicmodels/Type/OrderDetailsType.php';
 require_once __DIR__ . '/classicmodels/Type/PaymentType.php';
 require_once __DIR__ . '/classicmodels/Type/ProductLineType.php';
+require_once __DIR__ . '/classicmodels/Type/ProductType.php';
+require_once __DIR__ . '/classicmodels/Type/UserType.php';
 require_once __DIR__ . '/classicmodels/Type/QueryType.php';
 require_once __DIR__ . '/classicmodels/Types.php';
 

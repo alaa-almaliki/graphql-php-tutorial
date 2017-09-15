@@ -133,7 +133,7 @@ $queryBuilder->addFields(
             'arguments' => [
                 [
                     'name' => 'productLine',
-                    'value' => 'Trains'
+                    'value' => 'Classic Cars'
                 ]
             ],
             'fields' => [
@@ -141,6 +141,34 @@ $queryBuilder->addFields(
                 ['name' => 'textDescription'],
                 ['name' => 'htmlDescription'],
                 ['name' => 'image'],
+                [
+                    'name' => 'products',
+                    'fields' => [
+                        ['name' => 'productCode'],
+                        ['name' => 'productLine'],
+                        ['name' => 'productScale'],
+                        ['name' => 'productVendor'],
+                        ['name' => 'productDescription'],
+                        ['name' => 'quantityInStock'],
+                        ['name' => 'buyPrice'],
+                        ['name' => 'MSRP'],
+                    ]
+                ],
+            ]
+        ],
+        [
+            'name' => 'user',
+            'arguments' => [
+                [
+                    'name' => 'id',
+                    'value' => 1
+                ],
+            ],
+            'fields' => [
+                ['name' => 'firstName'],
+                ['name' => 'lastName'],
+                ['name' => 'phoneNumber'],
+                ['name' => 'email'],
             ]
         ]
     ]

@@ -36,6 +36,12 @@ class QueryType extends ObjectType
                     'args' => [
                         'productLine' => Type::string()
                     ]
+                ],
+                'user' => [
+                    'type' => Types::user(),
+                    'args' => [
+                        'id' => Type::int(),
+                    ],
                 ]
             ],
             'resolveField' => function ($val, $args, $context, \GraphQL\Type\Definition\ResolveInfo $info) {
@@ -64,6 +70,11 @@ class QueryType extends ObjectType
     public function productLine($root, $args)
     {
         return (new ProductLine())->getByProductLine($args['productLine']);
+    }
+
+    public function user($root, $args)
+    {
+        return (new User())->getById($args['id']);
     }
 
 }

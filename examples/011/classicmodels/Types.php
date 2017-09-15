@@ -13,6 +13,8 @@ class Types
     private static $orderDetailsType;
     private static $payment;
     private static $productLine;
+    private static $productType;
+    private static $userType;
 
     static public function customer()
     {
@@ -54,6 +56,11 @@ class Types
         return self::$productLine?: (self::$productLine = new ProductLineType());
     }
 
+    static public function product()
+    {
+        return self::$productType?: (self::$productType = new ProductType());
+    }
+
     static public function email()
     {
         return Registry::basicEmailType();
@@ -67,6 +74,11 @@ class Types
     static public function orderDetails()
     {
         return self::$orderDetailsType?: (self::$orderDetailsType = new OrderDetailsType());
+    }
+
+    static public function user()
+    {
+        return self::$userType?: (self::$userType = new UserType());
     }
 
     static public function string()
